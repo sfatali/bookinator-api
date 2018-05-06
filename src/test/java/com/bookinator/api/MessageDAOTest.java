@@ -52,6 +52,4 @@ public class MessageDAOTest {
         Assert.assertNotNull(messages);
         Assert.assertEquals(6, messages.size());
     }
-
-
 }
