@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace="com.bookinator.api.dao.UserDAO">
+    <insert id="create" parameterType="com.bookinator.api.model.User"
+            useGeneratedKeys='true' keyProperty='id' keyColumn="id">
+        INSERT INTO users(username, password, name, surname, city_id, phone, email)
+        VALUES (#{username}, #{password}, #{name}, #{surname}, #{cityId}, #{phone}, #{email});
+    </insert>
+
+    <update id="update" parameterType="com.bookinator.api.model.User">
+        update users
+        set name = #{name}, surname = #{surname}, email = #{email}, phone = #{phone}, city_id = #{cityId}
+        where id = #{id};
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from users WHERE id = #{id};
+    </delete>
+
+    <select id="getUserProfile" parameterType="int" resultMap="UserProfileMap">
+        select t1.id, t1.name, t1.surname, t1.email, t1.phone,
+        c.name as city, avg(r.score) as score
+        from users t1
+        left join reviews r on t1.id = r.reviewee_id
+        left join cities c on t1.city_id = c.id
+        where t1.id = #{id}
+        group by t1.id, t1.name, t1.surname, t1.email, t1.phone, city;
+    </select>
+
+    <!-- for tests only -->
+    <select id="getById" parameterType="int" resultMap="UserMap">
+        SELECT * FROM users WHERE id = #{id};
+    </select>
+
+
+    <resultMap id="UserMap" type="com.bookinator.api.model.User">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="surname" column="surname"/>
+        <result property="cityId" column="city_id"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+    </resultMap>
+
+    <resultMap id="UserProfileMap" type="com.bookinator.api.model.dto.UserProfile">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="surname" column="surname"/>
+        <result property="city" column="city"/>
+        <result property="phone" column="phone"/>
+        <result property="score" column="score"/>
+    </resultMap>
+</mapper>

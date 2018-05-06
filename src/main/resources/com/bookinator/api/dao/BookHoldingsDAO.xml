@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace="com.bookinator.api.dao.BookHoldingsDAO">
+
+    <insert id="create" parameterType="com.bookinator.api.model.HoldingRequest"
+            useGeneratedKeys='true' keyProperty='id' keyColumn="id">
+        INSERT INTO holding_requests(sender_id, receiver_id, book_id, parent_book_id,
+                                     status_id, request_message)
+        VALUES(#{senderId}, #{receiverId}, #{bookId}, #{parentBookId},
+               #{statusId}, #{requestMessage});
+    </insert>
+
+    <select id="getHoldingRequestById" parameterType="int" resultMap="HoldingMap">
+        select * from holding_requests where id = #{id}
+    </select>
+
+    <update id="changeHoldingStatus" parameterType="com.bookinator.api.model.dto.UpdateHoldingRequestStatus">
+        UPDATE holding_requests set status_id = #{statusId}, date_updated = now()
+        WHERE id = #{holdingRequestId};
+    </update>
+
+    <select id="getFreshRequests" parameterType="int" resultMap="HoldingDtoMap">
+        select hr.id, hr.sender_id, u.username as sender_name, hr.book_id, b.name as book_name, hr.status_id,
+            hrst.name as ststus_name, hr.parent_book_id, bp.name as parent_book_name,
+            coalesce(hr.request_message, '') as message, to_char(hr.date_created, 'dd.MM.yyyy HH24:MI') as date_created
+        from holding_requests hr
+            LEFT JOIN users u ON u.id = hr.sender_id
+            LEFT JOIN books b ON b.id = hr.book_id
+            LEFT JOIN books bp ON bp.id = hr.parent_book_id
+            LEFT JOIN holding_request_status_types hrst ON hrst.id = hr.status_id
+        where hr.receiver_id = #{userId} and hr.status_id = 1
+        order by date_created desc;
+    </select>
+
+    <select id="getApprovedRequests" parameterType="int" resultMap="HoldingDtoMap">
+        select hr.id, hr.sender_id, u.username as sender_name, hr.book_id, b.name as book_name, hr.status_id,
+            hrst.name as ststus_name, hr.parent_book_id, bp.name as parent_book_name,
+            coalesce(hr.request_message, '') as message, to_char(hr.date_created, 'dd.MM.yyyy HH24:MI') as date_created
+        from holding_requests hr
+            LEFT JOIN users u ON u.id = hr.sender_id
+            LEFT JOIN books b ON b.id = hr.book_id
+            LEFT JOIN books bp ON bp.id = hr.parent_book_id
+            LEFT JOIN holding_request_status_types hrst ON hrst.id = hr.status_id
+        where hr.receiver_id = #{userId} and (hr.status_id = 2 or hr.status_id = 4)
+        order by date_created desc;
+    </select>
+
+    <resultMap id="HoldingDtoMap" type="com.bookinator.api.model.dto.HoldingRequest">
+        <result property="id" column="id"/>
+        <result property="date" column="date_created"/>
+        <result property="requestMessage" column="message"/>
+        <result property="date" column="date_created"/>
+        <association property="sender" resultMap="SenderMap"/>
+        <association property="book" resultMap="BookMap"/>
+        <association property="parentBook" resultMap="ParentBookMap"/>
+    </resultMap>
+
+    <resultMap id="SenderMap" type="com.bookinator.api.model.Util">
+        <result property="id" column="sender_id"/>
+        <result property="name" column="sender_name"/>
+    </resultMap>
+
+    <resultMap id="BookMap" type="com.bookinator.api.model.Util">
+        <result property="id" column="book_id"/>
+        <result property="name" column="book_name"/>
+    </resultMap>
+
+    <resultMap id="ParentBookMap" type="com.bookinator.api.model.Util">
+        <result property="id" column="parent_book_id"/>
+        <result property="name" column="parent_book_name"/>
+    </resultMap>
+
+    <resultMap id="HoldingMap" type="com.bookinator.api.model.HoldingRequest">
+        <result property="id" column="id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="bookId" column="book_id"/>
+        <result property="parentBookId" column="parent_book_id"/>
+        <result property="statusId" column="status_id"/>
+        <result property="requestMessage" column="request_message"/>
+    </resultMap>
+</mapper>

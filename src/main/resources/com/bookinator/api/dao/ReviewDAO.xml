@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace="com.bookinator.api.dao.ReviewDAO">
+
+    <insert id="create" parameterType="com.bookinator.api.model.Review"
+            useGeneratedKeys='true' keyProperty='id' keyColumn="id">
+        INSERT INTO reviews(holding_request_id, reviewer_id, reviewee_id, review_text, score)
+        VALUES(#{holdingRequestId}, #{reviewerId}, #{revieweeId}, #{reviewText}, #{score});
+    </insert>
+
+    <update id="update" parameterType="com.bookinator.api.model.Review">
+        update reviews set score = #{score}, review_text = #{reviewText}
+        where id = #{id}
+    </update>
+
+    <select id="getReviewById" parameterType="int" resultMap="ReviewMap">
+        SELECT * FROM reviews WHERE id = #{id};
+    </select>
+
+    <select id="getUserReviews" parameterType="int" resultMap="ReviewDtoMap">
+        select r.id, to_char(r.date_created, 'dd.MM.yyyy HH24:MI') as date_created, r.score,
+            r.review_text, u.username as author
+        from users u, reviews r
+        where u.id = r.reviewer_id and r.reviewee_id = #{id}
+    </select>
+
+    <resultMap id="ReviewDtoMap" type="com.bookinator.api.model.dto.Review">
+        <result property="id" column="id"/>
+        <result property="author" column="author"/>
+        <result property="date" column="date_created"/>
+        <result property="score" column="score"/>
+        <result property="reviewText" column="review_text"/>
+    </resultMap>
+
+    <resultMap id="ReviewMap" type="com.bookinator.api.model.Review">
+        <result property="id" column="id"/>
+        <result property="holdingRequestId" column="holding_request_id"/>
+        <result property="reviewerId" column="reviewer_id"/>
+        <result property="revieweeId" column="reviewee_id"/>
+        <result property="score" column="score"/>
+        <result property="reviewText" column="review_text"/>
+    </resultMap>
+
+</mapper>

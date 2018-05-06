@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace="com.bookinator.api.dao.UtilDAO">
+
+    <select id="getCountries" resultMap="UtilMap">
+        SELECT * FROM countries;
+    </select>
+
+    <select id="getCities" resultMap="UtilMap">
+        SELECT * FROM cities;
+    </select>
+
+    <select id="getFields" resultMap="UtilMap">
+        SELECT * FROM fields;
+    </select>
+
+    <select id="getBookStatusTypes" resultMap="UtilMap">
+        SELECT * FROM book_status_types;
+    </select>
+
+    <select id="getBookHoldingTypes" resultMap="UtilMap">
+        SELECT * FROM book_holding_types;
+    </select>
+
+    <resultMap id="UtilMap" type="com.bookinator.api.model.Util">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+</mapper>

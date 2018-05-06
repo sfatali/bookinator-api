@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace="com.bookinator.api.dao.MessageDAO">
+
+    <insert id="create" parameterType="com.bookinator.api.model.Message"
+            useGeneratedKeys='true' keyProperty='id' keyColumn="id">
+        INSERT INTO messages(holding_request_id, sender_id, receiver_id, message_text)
+        VALUES(#{holdingRequestId}, #{senderId}, #{receiverId}, #{messageText});
+    </insert>
+
+    <select id="getMessageById" parameterType="int" resultMap="MessageMap">
+        select * from messages where id = #{id};
+    </select>
+
+    <select id="getMessages" parameterType="int" resultMap="MessageDtoMap">
+        select m.id, u1.username as receiver, u2.username as sender, m.message_text,
+               to_char(m.date_created, 'dd.MM.yyyy HH24:MI') as date_created
+        from messages m
+            left join users u1 on u1.id = m.receiver_id
+            left join users u2 on u2.id = m.sender_id
+        where m.holding_request_id = #{id}
+        order by m.id;
+    </select>
+
+    <resultMap id="MessageMap" type="com.bookinator.api.model.Message">
+        <result property="id" column="id"/>
+        <result property="holdingRequestId" column="holding_request_id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="messageText" column="message_text"/>
+    </resultMap>
+
+    <resultMap id="MessageDtoMap" type="com.bookinator.api.model.dto.Message">
+        <result property="id" column="id"/>
+        <result property="date" column="date_created"/>
+        <result property="sender" column="sender"/>
+        <result property="messageText" column="message_text"/>
+    </resultMap>
+</mapper>
