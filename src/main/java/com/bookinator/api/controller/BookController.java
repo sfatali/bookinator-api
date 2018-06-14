@@ -42,7 +42,7 @@ public class BookController {
      * @param topic
      * @return
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET/*, produces ={"application/collection+json"}*/)
+    @RequestMapping(method = RequestMethod.GET/*, produces ={"application/collection+json"}*/)
     HttpEntity filterBooks(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "author", required = false) String author,
                            @RequestParam(value = "fieldId", required = false) String fieldId,
@@ -203,7 +203,7 @@ public class BookController {
         return new ResponseEntity<BookDtoResource>(bookResource, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     HttpEntity saveBook(@RequestBody com.bookinator.api.model.Book book) {
         if(book.getOwnerId() == 0) {
             return new ResponseEntity<ErrorResource>(
@@ -251,7 +251,7 @@ public class BookController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT)
     HttpEntity updateBook(@RequestBody com.bookinator.api.model.Book book) {
         if(book.getOwnerId() == 0) {
             return new ResponseEntity<ErrorResource>(

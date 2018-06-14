@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -22,7 +23,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping(value = "/users")
 public class UserController {
     @Autowired
-    UserDAO userDAO;
+    private UserDAO userDAO;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     HttpEntity getUser(@PathVariable("userId") String userIdStr) {
@@ -66,7 +69,7 @@ public class UserController {
         return new ResponseEntity<UserResource>(userResource, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     HttpEntity saveUser(@RequestBody User user) {
         if(user.getUsername() == null || user.getUsername().length() == 0) {
             return new ResponseEntity<ErrorResource>(
@@ -82,9 +85,9 @@ public class UserController {
             int count = userDAO.countByUsername(user.getUsername());
             if(count != 0) {
                 return new ResponseEntity<ErrorResource>(
-                        ControllerHelper.getErrorResource(400, "Bad Request",
+                        ControllerHelper.getErrorResource(409, "Bad Request",
                                 "Username is already taken, choose another one"),
-                        HttpStatus.BAD_REQUEST);
+                        HttpStatus.CONFLICT);
             }
         }
         if(user.getPassword() == null || user.getPassword().length() == 0) {
@@ -92,6 +95,13 @@ public class UserController {
                     ControllerHelper.getErrorResource(400, "Bad Request",
                             "Password cannot be empty"),
                     HttpStatus.BAD_REQUEST);
+        } else if(user.getPassword().length() < 8) {
+            return new ResponseEntity<ErrorResource>(
+                    ControllerHelper.getErrorResource(400, "Bad Request",
+                            "Password should be at least 8 characters long"),
+                    HttpStatus.BAD_REQUEST);
+        } else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
         if(user.getName() == null || user.getName().length() == 0) {
             return new ResponseEntity<ErrorResource>(
@@ -123,7 +133,7 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT)
     HttpEntity updateUser(@RequestBody User user) {
         if(user.getId() == 0) {
             return new ResponseEntity<ErrorResource>(
@@ -150,6 +160,14 @@ public class UserController {
                     HttpStatus.BAD_REQUEST);
         }
         try {
+            User userFromDb = userDAO.getById(user.getId());
+            if(userFromDb == null) {
+                return new ResponseEntity<ErrorResource>(
+                        ControllerHelper.getErrorResource(404, "Not found",
+                                "User with that ID does not exist"),
+                        HttpStatus.NOT_FOUND);
+
+            }
             userDAO.update(user);
         } catch (Exception ex) {
             return new ResponseEntity<ErrorResource>(

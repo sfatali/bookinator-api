@@ -48,11 +48,14 @@ INSERT INTO cities(id, country_id, name) VALUES(32, 10, 'Gandja');
 INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
     VALUES (1, null, null, 'Chouaib', 'Hamek', 1, null, 'somemail@gmail.com'); -- unregistered user
 INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
-  VALUES (2, 'alfitra', '', 'Alfitra', 'Rahman', 1, '+358460000001', 'somemail2@gmail.com');
+  VALUES (2, 'alfitra', '$2a$10$lYT0mOImwvCwtUyQwef2RO.JFjlqkzg/YgI5qbrz0VP6virgwzCjy', -- 1 is default password
+          'Alfitra', 'Rahman', 1, '+358460000001', 'somemail2@gmail.com');
 INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
-  VALUES (3, 'daniel', '', 'Daniel', 'Toniuc', 1, '+358460000002', 'somemail3@gmail.com');
+  VALUES (3, 'daniel', '$2a$10$lYT0mOImwvCwtUyQwef2RO.JFjlqkzg/YgI5qbrz0VP6virgwzCjy',
+          'Daniel', 'Toniuc', 1, '+358460000002', 'somemail3@gmail.com');
 INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
-  VALUES (4, 'sabina', '', 'Sabina', 'Fataliyeva', 1, '+358460000003', 'somemail4@gmail.com');
+  VALUES (4, 'sabina', '$2a$10$lYT0mOImwvCwtUyQwef2RO.JFjlqkzg/YgI5qbrz0VP6virgwzCjy',
+          'Sabina', 'Fataliyeva', 1, '+358460000003', 'somemail4@gmail.com');
 select setval('users_id_seq', 4);
 
 -- book status types

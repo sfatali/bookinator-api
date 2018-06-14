@@ -2,6 +2,7 @@ package com.bookinator.api;
 
 import com.bookinator.api.dao.UserDAO;
 import com.bookinator.api.model.User;
+import com.bookinator.api.security.UserDetailsServiceImpl;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.sql.DataSource;
 
@@ -42,6 +45,16 @@ public class BookinatorApplication {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource());
 		return sqlSessionFactoryBean;
+	}
+
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new UserDetailsServiceImpl();
 	}
 
 	public static void main(String[] args) {

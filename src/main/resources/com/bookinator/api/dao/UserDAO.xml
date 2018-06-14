@@ -38,6 +38,9 @@
         select count(*) from users where username = #{name};
     </select>
 
+    <select id="findByUsername" parameterType="java.lang.String" resultMap="UserMap">
+        select username, password from users where username = #{name};
+    </select>
 
     <resultMap id="UserMap" type="com.bookinator.api.model.User">
         <result property="id" column="id"/>
