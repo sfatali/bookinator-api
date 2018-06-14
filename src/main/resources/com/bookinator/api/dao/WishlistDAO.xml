@@ -27,7 +27,7 @@
         order by b.name asc;
     </select>
 
-    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.Book">
+    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.BookFilterResponse">
         <result property="id" column="id"/>
         <result property="ownerId" column="owner_id"/>
         <result property="ownerAvgRating" column="owner_avg_rating"/>

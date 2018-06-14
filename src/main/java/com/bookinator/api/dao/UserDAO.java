@@ -19,4 +19,5 @@ public interface UserDAO {
     void delete(@Param("id") int id);
     UserProfile getUserProfile(@Param("id") int id);
     User getById(@Param("id") int id);
+    int countByUsername(String name);
 }

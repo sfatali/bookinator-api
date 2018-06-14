@@ -1,29 +1,30 @@
-package com.bookinator.api.model.dto;
+package com.bookinator.api.resources;
+
+import org.springframework.hateoas.ResourceSupport;
 
 /**
  * Created by Sabina on 6/13/2018.
  */
-public class Book {
-    private int id;
+public class BookFilterResource extends ResourceSupport {
+    private int bookId;
     private int ownerId;
+    private double ownerAvgRating;
     private String name;
     private String holdingType;
     private String status;
-    private String authors;
+    private String[] authors;
     private String yearPublished;
     private String field;
-    private String topics;
+    private String[] topics;
     private String description;
+    private String city;
 
-    public Book() {
+    public int getBookId() {
+        return bookId;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 
     public int getOwnerId() {
@@ -32,6 +33,14 @@ public class Book {
 
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public double getOwnerAvgRating() {
+        return ownerAvgRating;
+    }
+
+    public void setOwnerAvgRating(double ownerAvgRating) {
+        this.ownerAvgRating = ownerAvgRating;
     }
 
     public String getName() {
@@ -58,11 +67,11 @@ public class Book {
         this.status = status;
     }
 
-    public String getAuthors() {
+    public String[] getAuthors() {
         return authors;
     }
 
-    public void setAuthors(String authors) {
+    public void setAuthors(String[] authors) {
         this.authors = authors;
     }
 
@@ -82,11 +91,11 @@ public class Book {
         this.field = field;
     }
 
-    public String getTopics() {
+    public String[] getTopics() {
         return topics;
     }
 
-    public void setTopics(String topics) {
+    public void setTopics(String[] topics) {
         this.topics = topics;
     }
 
@@ -96,5 +105,13 @@ public class Book {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

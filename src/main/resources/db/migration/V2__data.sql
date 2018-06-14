@@ -56,6 +56,7 @@ INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
 select setval('users_id_seq', 4);
 
 -- book status types
+INSERT INTO book_status_types(id, name) VALUES(0, 'Unknown');
 INSERT INTO book_status_types(id, name) VALUES(1, 'Available');
 INSERT INTO book_status_types(id, name) VALUES(2, 'Taken to read');
 INSERT INTO book_status_types(id, name) VALUES(3, 'Given away');
@@ -63,10 +64,12 @@ INSERT INTO book_status_types(id, name) VALUES(4, 'Temporarily unavailable');
 INSERT INTO book_status_types(id, name) VALUES(5, 'In search');
 
 -- book holding types
+INSERT INTO book_holding_types(id, name) VALUES(0, 'Unknown');
 INSERT INTO book_holding_types(id, name) VALUES(1, 'Give away');
 INSERT INTO book_holding_types(id, name) VALUES(2, 'Read and return');
 
 -- book fields
+INSERT INTO fields(id, name) VALUES(0, 'Unknown');
 INSERT INTO fields(id, name) VALUES(1, 'Fiction literature');
 INSERT INTO fields(id, name) VALUES(2, 'Historical literature');
 INSERT INTO fields(id, name) VALUES(3, 'Scientific literature');

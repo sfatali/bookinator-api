@@ -3,6 +3,7 @@ package com.bookinator.api;
 import com.bookinator.api.dao.BookDAO;
 import com.bookinator.api.model.Book;
 import com.bookinator.api.model.dto.BookFilterRequest;
+import com.bookinator.api.model.dto.BookFilterResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +34,7 @@ public class BookDAOTest {
         testBook.setOwnerId(1);
         testBook.setHoldingTypeId(1);
         testBook.setStatusId(1);
-        testBook.setName("Book name");
+        testBook.setName("BookFilterResponse name");
         testBook.setAuthors("author;");
         testBook.setFieldId(1);
         testBook.setYearPublished(2001);
@@ -92,26 +92,26 @@ public class BookDAOTest {
 
     @Test
     public void testBooksFilter() {
-        // when no fields for filter are assigned, just all books are returned
+        // when no fields for filter are assigned, just all bookFilterResponses are returned
         BookFilterRequest filterRequest = new BookFilterRequest();
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.filterBooks(filterRequest);
-        Assert.assertEquals(8, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        Assert.assertEquals(8, bookFilterResponses.size());
     }
 
     @Test
     public void testBooksFilterByName() {
         BookFilterRequest filterRequest = new BookFilterRequest();
         filterRequest.setName("The Lord of the Rings");
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.filterBooks(filterRequest);
-        Assert.assertEquals(3, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        Assert.assertEquals(3, bookFilterResponses.size());
     }
 
     @Test
     public void testBooksFilterByAuthor() {
         BookFilterRequest filterRequest = new BookFilterRequest();
         filterRequest.setAuthor("Tolkien");
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.filterBooks(filterRequest);
-        Assert.assertEquals(3, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        Assert.assertEquals(3, bookFilterResponses.size());
     }
 
     @Test
@@ -122,37 +122,43 @@ public class BookDAOTest {
         filterRequest.setFieldId(1);
         filterRequest.setCityId(1);
         filterRequest.setTopic("fantasy");
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.filterBooks(filterRequest);
-        Assert.assertEquals(3, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        Assert.assertEquals(3, bookFilterResponses.size());
     }
 
     @Test
     public void testBooksFilterByYear() {
         BookFilterRequest filterRequest = new BookFilterRequest();
         filterRequest.setYearPublished(1988);
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.filterBooks(filterRequest);
-        Assert.assertEquals(1, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        Assert.assertEquals(1, bookFilterResponses.size());
     }
 
     @Test
     public void testBooksFilterByField() {
         BookFilterRequest filterRequest = new BookFilterRequest();
         filterRequest.setFieldId(5);
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.filterBooks(filterRequest);
-        Assert.assertEquals(4, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        Assert.assertEquals(4, bookFilterResponses.size());
     }
 
     @Test
     public void testBooksFilterByCity() {
         BookFilterRequest filterRequest = new BookFilterRequest();
         filterRequest.setCityId(1);
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.filterBooks(filterRequest);
-        Assert.assertEquals(8, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        Assert.assertEquals(8, bookFilterResponses.size());
     }
 
     @Test
     public void testGetUserBooks() {
-        List<com.bookinator.api.model.dto.Book> books = bookDAO.getUserBooks(4);
-        Assert.assertEquals(3, books.size());
+        List<BookFilterResponse> bookFilterResponses = bookDAO.getUserBooks(4);
+        Assert.assertEquals(3, bookFilterResponses.size());
+    }
+
+    @Test
+    public void testGetBookDto() {
+        com.bookinator.api.model.dto.Book book = bookDAO.getBookDTO(1);
+        Assert.assertNotNull(book);
     }
 }

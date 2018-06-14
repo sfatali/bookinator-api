@@ -104,4 +104,10 @@ public class UserDAOTest {
         User userFromDb = userDAO.getById(testUser.getId());
         Assert.assertNull(userFromDb);
     }
+
+    @Test
+    public void testCountByUsername() {
+        int count = userDAO.countByUsername("sabina");
+        Assert.assertEquals(1, count);
+    }
 }

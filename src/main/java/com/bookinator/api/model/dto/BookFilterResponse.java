@@ -1,11 +1,12 @@
 package com.bookinator.api.model.dto;
 
 /**
- * Created by Sabina on 6/13/2018.
+ * Created by Sabina on 5/5/2018.
  */
-public class Book {
+public class BookFilterResponse {
     private int id;
     private int ownerId;
+    private double ownerAvgRating;
     private String name;
     private String holdingType;
     private String status;
@@ -14,8 +15,9 @@ public class Book {
     private String field;
     private String topics;
     private String description;
+    private String city;
 
-    public Book() {
+    public BookFilterResponse() {
     }
 
     public int getId() {
@@ -24,14 +26,6 @@ public class Book {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
     }
 
     public String getName() {
@@ -66,6 +60,22 @@ public class Book {
         this.authors = authors;
     }
 
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public double getOwnerAvgRating() {
+        return ownerAvgRating;
+    }
+
+    public void setOwnerAvgRating(double ownerAvgRating) {
+        this.ownerAvgRating = ownerAvgRating;
+    }
+
     public String getYearPublished() {
         return yearPublished;
     }
@@ -96,5 +106,13 @@ public class Book {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

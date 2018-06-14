@@ -2,7 +2,7 @@ package com.bookinator.api;
 
 import com.bookinator.api.dao.WishlistDAO;
 import com.bookinator.api.model.Wishlist;
-import com.bookinator.api.model.dto.Book;
+import com.bookinator.api.model.dto.BookFilterResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,9 +32,9 @@ public class WishlistDAOTest {
         wishlistRequest.setUserId(3);
         wishlistDAO.addToWishlist(wishlistRequest);
 
-        List<Book> books = wishlistDAO.getUserWishlist(3);
-        Assert.assertNotNull(books);
-        Assert.assertEquals(4, books.size());
+        List<BookFilterResponse> bookFilterResponses = wishlistDAO.getUserWishlist(3);
+        Assert.assertNotNull(bookFilterResponses);
+        Assert.assertEquals(4, bookFilterResponses.size());
     }
 
     @Test
@@ -44,8 +44,8 @@ public class WishlistDAOTest {
         wishlistRequest.setUserId(3);
         wishlistDAO.removeFromWishlist(wishlistRequest);
 
-        List<Book> books = wishlistDAO.getUserWishlist(3);
-        Assert.assertNotNull(books);
-        Assert.assertEquals(2, books.size());
+        List<BookFilterResponse> bookFilterResponses = wishlistDAO.getUserWishlist(3);
+        Assert.assertNotNull(bookFilterResponses);
+        Assert.assertEquals(2, bookFilterResponses.size());
     }
 }

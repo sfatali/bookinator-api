@@ -87,6 +87,17 @@
         order by b.name asc
     </select>
 
+    <select id="getBookDTO" parameterType="int" resultMap="BookDto2Map">
+        select b.id, b.owner_id, b.name, coalesce(b.authors, '') as authors, coalesce(b.topics, '') as topics,
+        coalesce(b.description, '') as description, coalesce(cast(b.year_published as varchar), '') as year_published,
+        bht.name as holding_type, bst.name as status, f.name as field
+        from books b
+        left join book_holding_types bht on b.holding_type_id = bht.id
+        left join book_status_types bst on b.status_id = bst.id
+        left join fields f on b.field_id = f.id
+        where b.id = #{id}
+    </select>
+
     <resultMap id="BookMap" type="com.bookinator.api.model.Book">
         <result property="id" column="id"/>
         <result property="ownerId" column="owner_id"/>
@@ -99,7 +110,7 @@
         <result property="description" column="description"/>
     </resultMap>
 
-    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.Book">
+    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.BookFilterResponse">
         <result property="id" column="id"/>
         <result property="ownerId" column="owner_id"/>
         <result property="ownerAvgRating" column="owner_avg_rating"/>
@@ -107,6 +118,18 @@
         <result property="status" column="status"/>
         <result property="authors" column="authors"/>
         <result property="city" column="city"/>
+        <result property="yearPublished" column="year_published"/>
+        <result property="field" column="field"/>
+        <result property="topics" column="topics"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <resultMap id="BookDto2Map" type="com.bookinator.api.model.dto.Book">
+        <result property="id" column="id"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="holdingType" column="holding_type"/>
+        <result property="status" column="status"/>
+        <result property="authors" column="authors"/>
         <result property="yearPublished" column="year_published"/>
         <result property="field" column="field"/>
         <result property="topics" column="topics"/>
