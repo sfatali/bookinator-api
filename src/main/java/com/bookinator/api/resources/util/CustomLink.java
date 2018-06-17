@@ -9,14 +9,16 @@ import java.util.List;
  */
 public class CustomLink extends Link {
     private String method;
+    private boolean authRequired;
 
     public CustomLink(String href, String rel) {
         super(href, rel);
     }
 
-    public CustomLink(String href, String rel, String method) {
+    public CustomLink(String href, String rel, String method, boolean auth) {
         super(href, rel);
         this.method = method;
+        this.authRequired = auth;
     }
 
     public String getMethod() {
@@ -25,5 +27,13 @@ public class CustomLink extends Link {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public boolean isAuthRequired() {
+        return authRequired;
+    }
+
+    public void setAuthRequired(boolean authRequired) {
+        this.authRequired = authRequired;
     }
 }

@@ -3,7 +3,9 @@ package com.bookinator.api;
 import com.bookinator.api.dao.UserDAO;
 import com.bookinator.api.model.User;
 import com.bookinator.api.security.UserDetailsServiceImpl;
+import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -22,8 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.sql.DataSource;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,
-		/*HypermediaAutoConfiguration.class*/})
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @MapperScan(value = {"com.bookinator.api.dao"}, sqlSessionFactoryRef = "org.mybatis.spring.SqlSessionFactoryBean")
 public class BookinatorApplication {
 	@Bean
@@ -55,6 +56,12 @@ public class BookinatorApplication {
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new UserDetailsServiceImpl();
+	}
+
+	@Bean
+	public UserDAO userMapper() throws Exception {
+		SqlSessionTemplate sessionTemplate = new SqlSessionTemplate(getSqlSessionFactoryBean().getObject());
+		return sessionTemplate.getMapper(UserDAO.class);
 	}
 
 	public static void main(String[] args) {

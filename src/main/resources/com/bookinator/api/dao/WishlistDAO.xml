@@ -7,9 +7,9 @@
         INSERT INTO books_wish_list(user_id, book_id) VALUES(#{userId}, #{bookId});
     </insert>
 
-    <!--<select id="test" resultMap="TestMap">
-        select book_id, user_id from books_wish_list;
-    </select>-->
+    <select id="count" parameterType="com.bookinator.api.model.Wishlist" resultType="int">
+        select count(*) from books_wish_list WHERE user_id = #{userId} AND book_id = #{bookId};
+    </select>
 
     <delete id="removeFromWishlist" parameterType="com.bookinator.api.model.Wishlist">
         DELETE  from books_wish_list WHERE user_id = #{userId} AND book_id = #{bookId};
@@ -18,12 +18,19 @@
     <select id="getUserWishlist" parameterType="int" resultMap="BookDtoMap">
         select b.id, b.owner_id, b.name, coalesce(b.authors, '') as authors, coalesce(b.topics, '') as topics,
                                          coalesce(b.description, '') as description, coalesce(cast(b.year_published as varchar), '') as year_published,
-                                         bht.name as holding_type, bst.name as status, f.name as field
+                                         bht.name as holding_type, bst.name as status, f.name as field, c.name as city,
+                                        round(avg(coalesce(r.score, 0)), 2) as owner_avg_rating
         from books_wish_list l, books b
             left join book_holding_types bht on b.holding_type_id = bht.id
             left join book_status_types bst on b.status_id = bst.id
             left join fields f on b.field_id = f.id
+            left join users u on b.owner_id = u.id
+            left join cities c on u.city_id = c.id
+            left join reviews r on r.reviewee_id = u.id
         where b.id = l.book_id and l.user_id = #{id}
+        group by
+            b.id, b.owner_id, b.name, b.authors, b.topics, b.description,
+            b.year_published, holding_type, status, field, city
         order by b.name asc;
     </select>
 
@@ -39,9 +46,12 @@
         <result property="field" column="field"/>
         <result property="topics" column="topics"/>
         <result property="description" column="description"/>
+        <result property="ownerAvgRating" column="owner_avg_rating"/>
+        <result property="city" column="city"/>
     </resultMap>
 
-    <!--<resultMap id="TestMap" tycom.bookinator.api.model.dto.Wishlist        <result property="bookId" column="book_id"/>
+    <!--<resultMap id="TestMap" type="com.bookinator.api.model.dto.Wishlist">
+        <result property="bookId" column="book_id"/>
         <result property="userId" column="user_id"/>
     </resultMap>-->
 </mapper>

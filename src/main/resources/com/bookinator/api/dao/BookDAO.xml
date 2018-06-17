@@ -75,7 +75,7 @@
         order by b.name asc, owner_avg_rating desc
     </select>
 
-    <select id="getUserBooks" parameterType="int" resultMap="BookDtoMap">
+    <select id="getUserBooks" parameterType="int" resultMap="BookDto2Map">
         select b.id, b.owner_id, b.name, coalesce(b.authors, '') as authors, coalesce(b.topics, '') as topics,
                coalesce(b.description, '') as description, coalesce(cast(b.year_published as varchar), '') as year_published,
                bht.name as holding_type, bst.name as status, f.name as field
@@ -96,6 +96,10 @@
         left join book_status_types bst on b.status_id = bst.id
         left join fields f on b.field_id = f.id
         where b.id = #{id}
+    </select>
+
+    <select id="getBookOwnerId" parameterType="int" resultType="int">
+        select owner_id from books where id = #{id};
     </select>
 
     <resultMap id="BookMap" type="com.bookinator.api.model.Book">

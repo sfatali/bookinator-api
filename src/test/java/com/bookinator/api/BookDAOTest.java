@@ -152,7 +152,7 @@ public class BookDAOTest {
 
     @Test
     public void testGetUserBooks() {
-        List<BookFilterResponse> bookFilterResponses = bookDAO.getUserBooks(4);
+        List<com.bookinator.api.model.dto.Book> bookFilterResponses = bookDAO.getUserBooks(4);
         Assert.assertEquals(3, bookFilterResponses.size());
     }
 

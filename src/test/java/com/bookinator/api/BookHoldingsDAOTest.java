@@ -76,7 +76,7 @@ public class BookHoldingsDAOTest {
     @Test
     public void testGetApprovedRequests() {
         List<com.bookinator.api.model.dto.HoldingRequest> requests =
-                bookHoldingsDAO.getFreshRequests(4);
+                bookHoldingsDAO.getApprovedRequests(4);
         Assert.assertNotNull(requests);
         Assert.assertEquals(1, requests.size());
     }

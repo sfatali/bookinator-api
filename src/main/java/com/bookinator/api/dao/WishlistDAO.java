@@ -15,4 +15,5 @@ public interface WishlistDAO {
     void addToWishlist(Wishlist request);
     void removeFromWishlist(Wishlist request);
     List<BookFilterResponse> getUserWishlist(@Param("id") int id);
+    int count(Wishlist wishlist);
 }

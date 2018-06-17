@@ -21,4 +21,5 @@ public interface UserDAO {
     User getById(@Param("id") int id);
     int countByUsername(String name);
     User findByUsername(String name);
+    int getIdByUsername(String name);
 }

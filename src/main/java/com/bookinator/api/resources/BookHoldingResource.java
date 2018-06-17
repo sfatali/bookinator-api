@@ -1,27 +1,25 @@
-package com.bookinator.api.model.dto;
+package com.bookinator.api.resources;
 
 import com.bookinator.api.model.Util;
+import org.springframework.hateoas.ResourceSupport;
 
 /**
- * Created by Sabina on 5/6/2018.
+ * Created by Sabina on 6/17/2018.
  */
-public class HoldingRequest {
-    private int id;
+public class BookHoldingResource extends ResourceSupport {
+    private int requestId;
     private Util sender;
     private Util book;
     private Util parentBook;
     private String date;
     private String requestMessage;
 
-    public HoldingRequest() {
+    public int getRequestId() {
+        return requestId;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
     }
 
     public Util getSender() {

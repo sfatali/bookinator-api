@@ -42,6 +42,10 @@
         select username, password from users where username = #{name};
     </select>
 
+    <select id="getIdByUsername" parameterType="java.lang.String" resultType="int">
+        select id from users where username = #{name};
+    </select>
+
     <resultMap id="UserMap" type="com.bookinator.api.model.User">
         <result property="id" column="id"/>
         <result property="username" column="username"/>

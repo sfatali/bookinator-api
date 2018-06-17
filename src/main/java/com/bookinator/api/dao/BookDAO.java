@@ -18,6 +18,7 @@ public interface BookDAO {
     void delete(@Param("id") int id);
     Book getBookById(@Param("id") int id);
     List<BookFilterResponse> filterBooks(BookFilterRequest filter);
-    List<BookFilterResponse> getUserBooks(@Param("id") int id);
+    List<com.bookinator.api.model.dto.Book> getUserBooks(@Param("id") int id);
     com.bookinator.api.model.dto.Book getBookDTO(@Param("id") int id);
+    int getBookOwnerId(@Param("id") int id);
 }

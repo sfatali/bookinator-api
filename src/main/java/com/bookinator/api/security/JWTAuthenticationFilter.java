@@ -1,6 +1,7 @@
 package com.bookinator.api.security;
 
 
+import com.bookinator.api.dao.UserDAO;
 import com.bookinator.api.model.dto.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -26,9 +27,12 @@ import static com.bookinator.api.security.SecurityConstants.*;
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+    private UserDAO userDAO;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager,
+                                   UserDAO userDAO) {
         this.authenticationManager = authenticationManager;
+        this.userDAO = userDAO;
     }
 
     @Override
@@ -54,9 +58,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-
+        String username = ((User) auth.getPrincipal()).getUsername();
+        int id = userDAO.getIdByUsername(username);
         String token = Jwts.builder()
-                .setSubject(((User) auth.getPrincipal()).getUsername())
+                .setSubject(username)
+                .claim("user-id", id)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
