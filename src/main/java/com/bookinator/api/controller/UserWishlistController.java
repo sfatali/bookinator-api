@@ -1,9 +1,7 @@
 package com.bookinator.api.controller;
 
 import com.bookinator.api.controller.helpers.BookRequestsHelper;
-import com.bookinator.api.controller.helpers.BooksHelper;
 import com.bookinator.api.controller.helpers.GeneralHelper;
-import com.bookinator.api.controller.helpers.WishlistHelper;
 import com.bookinator.api.dao.WishlistDAO;
 import com.bookinator.api.model.Wishlist;
 import com.bookinator.api.model.dto.BookFilterResponse;
@@ -93,7 +91,7 @@ public class UserWishlistController {
         //selfLink.setRequestTemplate(WishlistHelper.getWishlistUrlTemplate());
         resource.add(selfLink);
         CustomLink homeLink = new CustomLink(
-                linkTo(methodOn(HomeController.class).goHome(token, username))
+                linkTo(methodOn(HomeLinksController.class).goHome(token, username))
                 .toString(),
                 "home", "GET", true);
         resource.add(homeLink);

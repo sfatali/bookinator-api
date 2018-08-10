@@ -1,4 +1,4 @@
-package com.bookinator.api;
+package com.bookinator.api.dao;
 
 import com.bookinator.api.dao.ReviewDAO;
 import com.bookinator.api.model.Review;
@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Sabina on 5/6/2018.
@@ -22,6 +23,8 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @EnableTransactionManagement
 public class ReviewDAOTest {
+    private static final Logger logger =
+            Logger.getLogger(ReviewDAOTest.class.getSimpleName());
     @Autowired
     private ReviewDAO reviewDAO;
     Review testReview;
@@ -36,8 +39,12 @@ public class ReviewDAOTest {
         testReview.setScore(4);
     }
 
+    /**
+     * Testing review creation
+     */
     @Test
     public void testAddReview() {
+        logger.info("Testing review creation");
         reviewDAO.create(testReview);
         Review reviewFromDb = reviewDAO.getReviewById(testReview.getId());
         Assert.assertNotNull(reviewFromDb);
@@ -48,8 +55,12 @@ public class ReviewDAOTest {
         Assert.assertEquals(testReview.getHoldingRequestId(), reviewFromDb.getHoldingRequestId());
     }
 
+    /**
+     * Testing review update
+     */
     @Test
     public void testUpdateReview() {
+        logger.info("Testing review update");
         reviewDAO.create(testReview);
         testReview.setScore(2);
         testReview.setReviewText("new text");
@@ -63,8 +74,12 @@ public class ReviewDAOTest {
         Assert.assertEquals(testReview.getHoldingRequestId(), reviewFromDb.getHoldingRequestId());
     }
 
+    /**
+     * Testing getting user's reviews
+     */
     @Test
     public void testGetUserReviews() {
+        logger.info("Testing getting user's reviews");
         List<com.bookinator.api.model.dto.Review> reviews = reviewDAO.getUserReviews(4);
         Assert.assertNotNull(reviews);
         Assert.assertEquals(1, reviews.size());

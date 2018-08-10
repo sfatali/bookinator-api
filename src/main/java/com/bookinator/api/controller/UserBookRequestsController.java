@@ -3,7 +3,6 @@ package com.bookinator.api.controller;
 import com.bookinator.api.controller.helpers.GeneralHelper;
 import com.bookinator.api.dao.BookDAO;
 import com.bookinator.api.dao.BookHoldingsDAO;
-import com.bookinator.api.dao.UserDAO;
 import com.bookinator.api.model.Book;
 import com.bookinator.api.model.dto.HoldingRequest;
 import com.bookinator.api.model.dto.UpdateHoldingRequestStatus;
@@ -81,7 +80,7 @@ public class UserBookRequestsController {
                         .toString(), "self", "GET", true);
         resource.add(selfLink);
         CustomLink homeLink = new CustomLink(
-                linkTo(methodOn(HomeController.class).goHome(token, username))
+                linkTo(methodOn(HomeLinksController.class).goHome(token, username))
                         .toString(),
                 "home", "GET", true);
         resource.add(homeLink);
@@ -133,7 +132,7 @@ public class UserBookRequestsController {
                 .toString(), "self", "GET", true);
         resource.add(self);
         CustomLink homeLink = new CustomLink(
-                linkTo(methodOn(HomeController.class).goHome(token, username))
+                linkTo(methodOn(HomeLinksController.class).goHome(token, username))
                         .toString(),
                 "home", "GET", true);
         resource.add(homeLink);

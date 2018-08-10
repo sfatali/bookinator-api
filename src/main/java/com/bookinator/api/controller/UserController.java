@@ -69,6 +69,12 @@ public class UserController {
                         HttpStatus.NOT_FOUND);
 
             }
+            if(!userFromDb.getUsername().equals(username)) {
+                return new ResponseEntity<ErrorResource>(
+                        GeneralHelper.getErrorResource(403, "Forbidden",
+                                "You cannot edit someone else's profile", true),
+                        HttpStatus.FORBIDDEN);
+            }
             userDAO.update(user);
         } catch (Exception ex) {
             return new ResponseEntity<ErrorResource>(

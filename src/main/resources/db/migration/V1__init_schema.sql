@@ -66,9 +66,9 @@ CREATE TABLE holding_requests(
   id serial UNIQUE,
   date_created TIMESTAMP DEFAULT NOW(),
   date_updated TIMESTAMP DEFAULT NOW(),
-  sender_id INTEGER REFERENCES users(id),
-  receiver_id INTEGER REFERENCES users(id),
-  book_id INTEGER REFERENCES books(id) NOT NULL ,
+  sender_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  receiver_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  book_id INTEGER REFERENCES books(id) ON DELETE CASCADE NOT NULL,
   parent_book_id INTEGER,
   status_id INTEGER REFERENCES holding_request_status_types(id),
   request_message VARCHAR(500)

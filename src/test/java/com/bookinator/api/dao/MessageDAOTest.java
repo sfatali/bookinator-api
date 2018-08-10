@@ -1,4 +1,4 @@
-package com.bookinator.api;
+package com.bookinator.api.dao;
 
 import com.bookinator.api.dao.MessageDAO;
 import com.bookinator.api.model.Message;
@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Sabina on 5/6/2018.
@@ -22,6 +23,8 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @EnableTransactionManagement
 public class MessageDAOTest {
+    private static final Logger logger =
+            Logger.getLogger(MessageDAOTest.class.getSimpleName());
     @Autowired
     private MessageDAO messageDAO;
     private Message testMessage;
@@ -35,8 +38,12 @@ public class MessageDAOTest {
         testMessage.setMessageText("the book is awesome");
     }
 
+    /**
+     * Testing message creation
+     */
     @Test
     public void testCreate() {
+        logger.info("Testing message creation");
         messageDAO.create(testMessage);
         Message messageFromDb = messageDAO.getMessageById(testMessage.getId());
         Assert.assertNotNull(messageFromDb);
@@ -46,8 +53,12 @@ public class MessageDAOTest {
         Assert.assertEquals(testMessage.getHoldingRequestId(), messageFromDb.getHoldingRequestId());
     }
 
+    /**
+     * Testing message update
+     */
     @Test
     public void testGetMessages() {
+        logger.info("Testing message update");
         List<com.bookinator.api.model.dto.Message> messages = messageDAO.getMessages(2);
         Assert.assertNotNull(messages);
         Assert.assertEquals(6, messages.size());

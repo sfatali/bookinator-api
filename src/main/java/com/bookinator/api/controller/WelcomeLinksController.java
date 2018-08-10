@@ -2,8 +2,8 @@ package com.bookinator.api.controller;
 
 import com.bookinator.api.controller.helpers.BooksHelper;
 import com.bookinator.api.controller.helpers.GeneralHelper;
-import com.bookinator.api.resources.MenuResource;
 import com.bookinator.api.resources.util.*;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +22,54 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping(value = "/")
-public class WelcomeController {
+public class WelcomeLinksController {
 
     @RequestMapping(value = "welcome", method = RequestMethod.GET, produces ={"application/hal+json"})
     public HttpEntity getApiEntry() {
+        ResourceSupport resource = new ResourceSupport();
 
+        // Self link:
+        CustomLink self = new CustomLink(linkTo(WelcomeLinksController.class)
+                            .slash("/welcome").toString(),"self","GET",false);
+        self.setTitle("Welcome to Bookinator!");
+        self.setDescription("You can register, login or explore the books");
+        resource.add(self);
+
+        // Register link:
+        CustomLinkWithRequestTemplate registerLink =
+                new CustomLinkWithRequestTemplate(linkTo(RegistrationController.class).slash("/register").toString(),
+                        "register", "POST", false);
+        registerLink.setTitle("Register");
+        registerLink.setDescription("Create your user account and embrace the full power of Bookinator!");
+        registerLink.setRequestTemplate(getRegistrationTemplate());
+        resource.add(registerLink);
+
+        // Login link:
+        CustomLinkWithRequestTemplate loginLink =
+                new CustomLinkWithRequestTemplate("http://localhost:8080/login",
+                        "login", "POST", false);
+        loginLink.setTitle("Log in");
+        loginLink.setDescription("Enter your username and password");
+        loginLink.setRequestTemplate(getLoginTemplate());
+        resource.add(loginLink);
+
+        // Explore books link:
+        CustomLinkWithUrlTemplate exploreBooksLink = new CustomLinkWithUrlTemplate(
+                linkTo(methodOn(ExploreController.class)
+                        .filterBooks(null, null, null, null, null, null))
+                        .toString(), "explore", "GET", false);
+        exploreBooksLink.setTitle("Explore books");
+        exploreBooksLink.setDescription("Use filter to get the most accurate results");
+        exploreBooksLink.setUrlTemplate(BooksHelper.getFilterBooksTemplate());
+        resource.add(exploreBooksLink);
+
+        // Post a book you look for ==> will be added if there is any time left => never ^_^
+
+        return new ResponseEntity<ResourceSupport>(resource, HttpStatus.OK);
+    }
+
+    /*@RequestMapping(value = "welcome_old", method = RequestMethod.GET, produces ={"application/hal+json"})
+    public HttpEntity getApiEntryOld() {
         // Register:
         MenuResource regItem = new MenuResource();
         regItem.setTitle("Register");
@@ -70,7 +113,7 @@ public class WelcomeController {
         resource.embedResource("login", loginItem);
         resource.embedResource("explore", exploreItem);
         return new ResponseEntity<ResourceWithEmbeddedSupport>(resource, HttpStatus.OK);
-    }
+    }*/
 
     private List<RequestTemplateItem> getRegistrationTemplate() {
         List<RequestTemplateItem> registrationTemplate = new ArrayList<>();

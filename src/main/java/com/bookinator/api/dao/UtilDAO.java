@@ -10,9 +10,33 @@ import java.util.List;
  */
 @Mapper
 public interface UtilDAO {
+    /**
+     * List of supported countries
+     * @return countries
+     */
     List<Util> getCountries();
+
+    /**
+     * List of supported cities
+     * @return cities
+     */
     List<Util> getCities();
+
+    /**
+     * List of book domains
+     * @return fields
+     */
     List<Util> getFields();
+
+    /**
+     * List of book statuses
+     * @return statuses
+     */
     List<Util> getBookStatusTypes();
+
+    /**
+     * List of holding types
+     * @return holding types
+     */
     List<Util> getBookHoldingTypes();
 }

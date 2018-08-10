@@ -13,12 +13,55 @@ import java.util.List;
  */
 @Mapper
 public interface BookDAO {
+    /**
+     * Creating a new book
+     * @param book book id
+     */
     void create(Book book);
+
+    /**
+     * Updating a book
+     * @param book book id
+     */
     void update(Book book);
+
+    /**
+     * Deleting a book
+     * @param id book id
+     */
     void delete(@Param("id") int id);
+
+    /**
+     * Get book by its id - in a way that is stored in database
+     * @param id book id
+     * @return Book
+     */
     Book getBookById(@Param("id") int id);
+
+    /**
+     * Returns books based on search criteria
+     * @param filter parameters for search
+     * @return list of books
+     */
     List<BookFilterResponse> filterBooks(BookFilterRequest filter);
+
+    /**
+     * Returns user's books
+     * @param id user id
+     * @return list of books
+     */
     List<com.bookinator.api.model.dto.Book> getUserBooks(@Param("id") int id);
+
+    /**
+     * @param id book id
+     * @return book DTO
+     */
     com.bookinator.api.model.dto.Book getBookDTO(@Param("id") int id);
+
+    /**
+     * Ger id of book owner
+     * @param id book id
+     * @return user id
+     */
     int getBookOwnerId(@Param("id") int id);
 }

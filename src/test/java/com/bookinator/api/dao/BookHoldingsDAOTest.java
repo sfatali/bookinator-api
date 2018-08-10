@@ -1,4 +1,4 @@
-package com.bookinator.api;
+package com.bookinator.api.dao;
 
 import com.bookinator.api.dao.BookHoldingsDAO;
 import com.bookinator.api.model.HoldingRequest;
@@ -7,13 +7,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runner.notification.RunListener;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Sabina on 5/6/2018.
@@ -22,7 +25,9 @@ import java.util.List;
 @MybatisTest
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @EnableTransactionManagement
-public class BookHoldingsDAOTest {
+public class BookHoldingsDAOTest extends RunListener {
+    private static final Logger logger =
+            Logger.getLogger(BookHoldingsDAOTest.class.getSimpleName());
     @Autowired
     private BookHoldingsDAO bookHoldingsDAO;
     private HoldingRequest testHoldingRequest;
@@ -38,8 +43,12 @@ public class BookHoldingsDAOTest {
         testHoldingRequest.setRequestMessage("look at this book");
     }
 
+    /**
+     * Testing creation of book's holding request
+     */
     @Test
     public void testCreate() {
+        logger.info("Testing creation of book's holding request");
         bookHoldingsDAO.create(testHoldingRequest);
         HoldingRequest holdingRequestFromDb =
                 bookHoldingsDAO.getHoldingRequestById(testHoldingRequest.getId());
@@ -52,8 +61,48 @@ public class BookHoldingsDAOTest {
         Assert.assertEquals(testHoldingRequest.getRequestMessage(), holdingRequestFromDb.getRequestMessage());
     }
 
+    /**
+     * Testing request creation with invalid sender
+     */
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testCreateInvalidSender() {
+        logger.info("Testing request creation with invalid sender");
+        testHoldingRequest.setSenderId(1500);
+        bookHoldingsDAO.create(testHoldingRequest);
+        HoldingRequest holdingRequestFromDb =
+                bookHoldingsDAO.getHoldingRequestById(testHoldingRequest.getId());
+    }
+
+    /**
+     * Testing request creation with invalid receiver
+     */
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testCreateInvalidReciver() {
+        logger.info("Testing request creation with invalid receiver");
+        testHoldingRequest.setReceiverId(1500);
+        bookHoldingsDAO.create(testHoldingRequest);
+        HoldingRequest holdingRequestFromDb =
+                bookHoldingsDAO.getHoldingRequestById(testHoldingRequest.getId());
+    }
+
+    /**
+     * Testing request creation with invalid book id
+     */
+    @Test(expected = DataIntegrityViolationException.class)
+    public void testCreateInvalidBook() {
+        logger.info("Testing request creation with invalid book id");
+        testHoldingRequest.setBookId(1500);
+        bookHoldingsDAO.create(testHoldingRequest);
+        HoldingRequest holdingRequestFromDb =
+                bookHoldingsDAO.getHoldingRequestById(testHoldingRequest.getId());
+    }
+
+    /**
+     * Testing status update of book's holding request
+     */
     @Test
     public void testStatusUpdate() {
+        logger.info("Testing status update of book's holding request");
         bookHoldingsDAO.create(testHoldingRequest);
         UpdateHoldingRequestStatus request = new UpdateHoldingRequestStatus();
         request.setStatusId(3);
@@ -65,16 +114,24 @@ public class BookHoldingsDAOTest {
         Assert.assertEquals(request.getStatusId(), holdingRequestFromDb.getStatusId());
     }
 
+    /**
+     * Testing getting user's unresponded book requests
+     */
     @Test
     public void testGetFreshRequests() {
+        logger.info("Testing getting user's unresponded book requests");
         List<com.bookinator.api.model.dto.HoldingRequest> requests =
                 bookHoldingsDAO.getFreshRequests(1);
         Assert.assertNotNull(requests);
         Assert.assertEquals(1, requests.size());
     }
 
+    /**
+     * Testing getting user's approved book requests
+     */
     @Test
     public void testGetApprovedRequests() {
+        logger.info("Testing getting user's approved book requests");
         List<com.bookinator.api.model.dto.HoldingRequest> requests =
                 bookHoldingsDAO.getApprovedRequests(4);
         Assert.assertNotNull(requests);

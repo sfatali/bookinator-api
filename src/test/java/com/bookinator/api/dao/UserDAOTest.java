@@ -1,4 +1,4 @@
-package com.bookinator.api;
+package com.bookinator.api.dao;
 
 import com.bookinator.api.dao.UserDAO;
 //import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Sabina on 4/15/2018.
@@ -37,6 +39,8 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @EnableTransactionManagement
 public class UserDAOTest {
+    private static final Logger logger =
+            Logger.getLogger(UserDAOTest.class.getSimpleName());
     @Autowired
     private UserDAO userDAO;
     User testUser;
@@ -53,8 +57,12 @@ public class UserDAOTest {
         testUser.setUsername("username");
     }
 
+    /**
+     * Testing user creation
+     */
     @Test
     public void create() {
+        logger.info("Testing user creation");
         userDAO.create(testUser);
         User userFromDb = userDAO.getById(testUser.getId());
         Assert.assertEquals(userFromDb.getCityId(), testUser.getCityId());
@@ -66,8 +74,33 @@ public class UserDAOTest {
         Assert.assertEquals(userFromDb.getSurname(), testUser.getSurname());
     }
 
+    /**
+     * Testing user creation attempt with empty name
+     */
+    @Test(expected = DataIntegrityViolationException.class)
+    public void createWithEmptyName() {
+        logger.info(" Testing user creation attempt with empty name");
+        testUser.setName(null);
+        userDAO.create(testUser);
+    }
+
+    /**
+     * Testing user creation attempt with empty surname
+     */
+    @Test(expected = DataIntegrityViolationException.class)
+    public void createWithEmptySurname() {
+        logger.info(" Testing user creation attempt with empty name");
+        testUser.setName(null);
+        userDAO.create(testUser);
+        User userFromDb = userDAO.getById(testUser.getId());
+    }
+
+    /**
+     * Testing user update
+     */
     @Test
     public void update() {
+        logger.info("Testing user update");
         userDAO.create(testUser);
         testUser.setPhone("new phone");
         testUser.setEmail("new mail");
@@ -85,8 +118,12 @@ public class UserDAOTest {
         Assert.assertEquals(userFromDb.getSurname(), testUser.getSurname());
     }
 
+    /**
+     * Testing getting user profile
+     */
     @Test
     public void getUserProfile() {
+        logger.info("Testing getting user profile");
         userDAO.create(testUser);
         UserProfile userFromDb = userDAO.getUserProfile(testUser.getId());
         Assert.assertEquals(userFromDb.getCity(), "Oulu");
@@ -97,16 +134,24 @@ public class UserDAOTest {
         Assert.assertEquals(userFromDb.getScore(), 0);
     }
 
+    /**
+     * Testing user deletion
+     */
     @Test
     public void delete() {
+        logger.info("Testing user deletion");
         userDAO.create(testUser);
         userDAO.delete(testUser.getId());
         User userFromDb = userDAO.getById(testUser.getId());
         Assert.assertNull(userFromDb);
     }
 
+    /**
+     * Testing getting user by username
+     */
     @Test
     public void testCountByUsername() {
+        logger.info("Testing getting user by username");
         int count = userDAO.countByUsername("sabina");
         Assert.assertEquals(1, count);
     }

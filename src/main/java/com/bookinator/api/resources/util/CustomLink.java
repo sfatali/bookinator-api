@@ -10,6 +10,8 @@ import java.util.List;
 public class CustomLink extends Link {
     private String method;
     private boolean authRequired;
+    private String description;
+    private String title;
 
     public CustomLink(String href, String rel) {
         super(href, rel);
@@ -35,5 +37,21 @@ public class CustomLink extends Link {
 
     public void setAuthRequired(boolean authRequired) {
         this.authRequired = authRequired;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

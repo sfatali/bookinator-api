@@ -56,7 +56,11 @@ INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
 INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
   VALUES (4, 'sabina', '$2a$10$lYT0mOImwvCwtUyQwef2RO.JFjlqkzg/YgI5qbrz0VP6virgwzCjy',
           'Sabina', 'Fataliyeva', 1, '+358460000003', 'somemail4@gmail.com');
-select setval('users_id_seq', 4);
+
+INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
+VALUES (5, 'johndoe', '$2a$10$WLuIM6O9qJ6pE04Y3SU4iuPTsMn3N4sPfFlehEn8EKjFGrWM5Shtq',
+        'John', 'Doe', 1, '+358460000004', 'somemail5@gmail.com');
+select setval('users_id_seq', 5);
 
 -- book status types
 INSERT INTO book_status_types(id, name) VALUES(0, 'Unknown');
@@ -91,11 +95,11 @@ INSERT INTO books(id, owner_id, holding_type_id, status_id, name, authors, year_
 INSERT INTO books(id, owner_id, holding_type_id, status_id, name, authors, year_published, field_id, topics, description)
   VALUES(5, 3, 2, 1, 'Learning Python', 'Mark Lutz', 2011, 5, 'Python', 'Best book to learn Python. I read it, it was awesome.');
 INSERT INTO books(id, owner_id, holding_type_id, status_id, name, authors, year_published, field_id, topics, description)
-  VALUES(6, 3, 1, 1, 'Pancakes cookbook', null, null, 5, 'Cooking;Pancakes', 'I used this book to learn how to make pancakes. Results are awesome.');
+  VALUES(6, 5, 1, 1, 'Pancakes cookbook', null, null, 5, 'Cooking;Pancakes', 'I used this book to learn how to make pancakes. Results are awesome.');
 INSERT INTO books(id, owner_id, holding_type_id, status_id, name, authors, year_published, field_id, topics, description)
   VALUES(7, 1, 1, 5, 'Pancakes recipes', null, null, 5, 'Pancakes;Recipes', 'I need a book with different pncakes recipes.');
 INSERT INTO books(id, owner_id, holding_type_id, status_id, name, authors, year_published, field_id, topics, description)
-  VALUES(8, 2, 2, 4, 'A brief history of time', 'Stephen Hawking', 1988, 3, 'Popular science;Cosmology;Universe;Physics', 'Amazing book, guys!');
+  VALUES(8, 2, 2, 1, 'A brief history of time', 'Stephen Hawking', 1988, 3, 'Popular science;Cosmology;Universe;Physics', 'Amazing book, guys!');
 select setval('books_id_seq', 8);
 
 -- books wish list

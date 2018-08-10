@@ -1,13 +1,10 @@
 package com.bookinator.api.controller.helpers;
 
-import com.bookinator.api.controller.HomeController;
-import com.bookinator.api.controller.WelcomeController;
+import com.bookinator.api.controller.HomeLinksController;
+import com.bookinator.api.controller.WelcomeLinksController;
 import com.bookinator.api.resources.ErrorResource;
 import com.bookinator.api.resources.util.CustomLink;
 import com.bookinator.api.resources.util.RequestTemplateItem;
-import com.bookinator.api.security.SecurityConstants;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -32,12 +29,12 @@ public class GeneralHelper {
         CustomLink homeLink;
         if(isAuth) {
             homeLink = new CustomLink(
-                    linkTo(methodOn(HomeController.class)
+                    linkTo(methodOn(HomeLinksController.class)
                             .goHome(null, null)).toString(),
                     "home", "GET", true);
         } else {
             homeLink = new CustomLink(
-                    linkTo(methodOn(WelcomeController.class)
+                    linkTo(methodOn(WelcomeLinksController.class)
                             .getApiEntry()).toString(),
                     "home", "GET", false);
         }

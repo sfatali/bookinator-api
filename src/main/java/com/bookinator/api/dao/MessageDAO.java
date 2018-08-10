@@ -11,7 +11,23 @@ import java.util.List;
  */
 @Mapper
 public interface MessageDAO {
+    /**
+     * Creating message
+     * @param message message
+     */
     void create(Message message);
+
+    /**
+     * Get message by id - in the way stored in db
+     * @param id message id
+     * @return message
+     */
     Message getMessageById(@Param("id") int id);
+
+    /**
+     * Get user's messages - in a readable way
+     * @param id user id
+     * @return messages
+     */
     List<com.bookinator.api.model.dto.Message> getMessages(@Param("id") int id);
 }

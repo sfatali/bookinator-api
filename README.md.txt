@@ -21,6 +21,8 @@
    If it anything looks suspicious rebuild the project (either find the button in IDE or run "mvn clean install").
 
 7) To run all the tests, use command "mvn test"
+    To run DAO tests:
+        mvn clean test -Dtest=com.bookinator.api.dao.* -Dsurefire.useFile=false | findstr /V "Context Bootstap Migrate Printer Runner support xml Validate DEBUG WARNING compiler maven"
 
 8) There is no separate test database. It can be added easily, but for the sake of setup simplicity it was not.
    However, all the SQL transactions taking place in DAO unit tests get rolled back upon test completion,
@@ -41,5 +43,25 @@
 
 3) JUnit - for unit testing
 
-4) MyBatis - for mapping sql with Java
+4) MyBatis - for mapping SQL with Java
 
+5) JWT as authorization token mechanism
+
+---------------------An overview the project structure:---------------------
+
+1) "src/main/java/.../controller" -- where REST controllers are stored.
+
+2) "src/main/java/.../dao" -- interfaces with the database methods.
+In "resources/.../dao" -- the SQL queries implementations are stored.
+
+3)"resources/db/migration" -- where database schema and dump data scripts are stored.
+
+4)"src/main/java/.../model" -- where classes that incorporate db entities and data transfer objects are stored.
+
+5) "src/main/java/.../resources" -- where API responses classes are stored (deep inside they include DTO).
+
+6) "src/main/java/.../security" -- where security stuff is stored.
+
+7) "test/java/..." -- where tests are stored
+
+8) pom.xml -- where project dependencies are stored

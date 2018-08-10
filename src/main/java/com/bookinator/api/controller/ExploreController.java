@@ -14,7 +14,6 @@ import com.bookinator.api.resources.util.CustomLink;
 import com.bookinator.api.resources.util.CustomLinkWithRequestTemplate;
 import com.bookinator.api.resources.util.CustomLinkWithUrlTemplate;
 import com.bookinator.api.resources.util.ResourceWithEmbeddedGenericSupport;
-import com.bookinator.api.security.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -38,7 +37,7 @@ public class ExploreController {
     @Autowired
     private UserDAO userDAO;
 
-    @RequestMapping(value = "explore", method = RequestMethod.GET/*, produces ={"application/collection+json"}*/)
+    @RequestMapping(value = "/explore", method = RequestMethod.GET/*, produces ={"application/collection+json"}*/)
     HttpEntity filterBooks(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "author", required = false) String author,
                            @RequestParam(value = "fieldId", required = false) String fieldId,
@@ -116,6 +115,13 @@ public class ExploreController {
                         .toString(), "self", "GET", false);
         selfLink.setUrlTemplate(BooksHelper.getFilterBooksTemplate());
         resource.add(selfLink);
+
+        CustomLink welcome = new CustomLink(linkTo(WelcomeLinksController.class)
+                .slash("/welcome").toString(),"welcome","GET",false);
+        welcome.setTitle("Welcome to Bookinator!");
+        welcome.setDescription("You can register, login or explore the books");
+        resource.add(welcome);
+
         resource.embedResource("books", bookFilterResourceList);
         return new ResponseEntity<ResourceWithEmbeddedGenericSupport>(resource, HttpStatus.OK);
     }
@@ -234,7 +240,7 @@ public class ExploreController {
         selfLink.setUrlTemplate(BooksHelper.getFilterBooksTemplate());
         resource.add(selfLink);
         CustomLink homeLink = new CustomLink(
-                linkTo(methodOn(HomeController.class).goHome(token, username))
+                linkTo(methodOn(HomeLinksController.class).goHome(token, username))
                         .toString(),
                 "home", "GET", true);
         resource.add(homeLink);

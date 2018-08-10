@@ -7,10 +7,7 @@ import com.bookinator.api.controller.helpers.WishlistHelper;
 import com.bookinator.api.dao.BookDAO;
 import com.bookinator.api.dao.UserDAO;
 import com.bookinator.api.model.dto.Book;
-import com.bookinator.api.model.dto.BookFilterResponse;
-import com.bookinator.api.model.dto.BookFilterRequest;
 import com.bookinator.api.resources.BookDtoResource;
-import com.bookinator.api.resources.BookFilterResource;
 import com.bookinator.api.resources.ErrorResource;
 import com.bookinator.api.resources.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,7 +119,7 @@ public class BookController {
                         .toString(), "self", "GET", true);
         resource.add(selfLink);
         CustomLink homeLink = new CustomLink(
-                linkTo(methodOn(HomeController.class).goHome(token, username))
+                linkTo(methodOn(HomeLinksController.class).goHome(token, username))
                         .toString(),
                 "home", "GET", true);
         resource.add(homeLink);

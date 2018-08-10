@@ -12,8 +12,29 @@ import java.util.List;
  */
 @Mapper
 public interface WishlistDAO {
+    /**
+     * Add to wishlist
+     * @param request request
+     */
     void addToWishlist(Wishlist request);
+
+    /**
+     * Remove from wishlist
+     * @param request request
+     */
     void removeFromWishlist(Wishlist request);
+
+    /**
+     * Get books from user wishlist
+     * @param id user id
+     * @return books in wishlist
+     */
     List<BookFilterResponse> getUserWishlist(@Param("id") int id);
+
+    /**
+     * Count books in user wishlist (no idea why this is even needed...)
+     * @param wishlist
+     * @return
+     */
     int count(Wishlist wishlist);
 }

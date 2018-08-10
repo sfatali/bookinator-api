@@ -70,6 +70,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180130</version>
+		</dependency>
+
 		<!--Test dependencies-->
 		<dependency>
 			<groupId>junit</groupId>
@@ -106,6 +112,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!--<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>2.22.0</version>
+		</dependency>-->
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<version>1.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -136,6 +152,16 @@
 					<schemas>public</schemas>
 				</configuration>
 			</plugin>
+			<!--<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+				<configuration>
+					<includes>
+						<include>Sample.java</include>
+					</includes>
+				</configuration>
+			</plugin>-->
 			<!--<plugin>
 				<groupId>org.flywaydb</groupId>
 				<version>4.2.0</version>

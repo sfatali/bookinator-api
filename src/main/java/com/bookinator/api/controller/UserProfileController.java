@@ -7,7 +7,6 @@ import com.bookinator.api.resources.ErrorResource;
 import com.bookinator.api.resources.UserResource;
 import com.bookinator.api.resources.util.CustomLink;
 import com.bookinator.api.resources.util.CustomLinkWithRequestTemplate;
-import com.bookinator.api.resources.util.CustomLinkWithUrlTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,7 @@ public class UserProfileController {
         if(!GeneralHelper.isPathUsernameValid(username)) {
             return new ResponseEntity<ErrorResource>(
                     GeneralHelper.getErrorResource(400, "Bad Request",
-                            "Malformed URL: no username", true),
+                            "Malformed URL: no username or too short", true),
                     HttpStatus.BAD_REQUEST);
         }
         // input is valid, getting the data now
@@ -66,13 +65,17 @@ public class UserProfileController {
                 linkTo(methodOn(UserProfileController.class)
                         .getProfile(username, token))
                         .toString(), "self", "GET", true);
+        self.setTitle("User Profile");
+        self.setDescription("User Profile");
         userResource.add(self);
 
         // home link:
         CustomLink homeLink = new CustomLink(
-                linkTo(methodOn(HomeController.class).goHome(token, username))
+                linkTo(methodOn(HomeLinksController.class).goHome(token, username))
                         .toString(),
                 "home", "GET", true);
+        homeLink.setTitle("Home");
+        homeLink.setDescription("Starting point for authorized user");
         userResource.add(homeLink);
 
         if(GeneralHelper.isUserAccessingOwnResources(token, username)) {
@@ -81,6 +84,8 @@ public class UserProfileController {
                     linkTo(methodOn(UserProfileController.class)
                             .getProfile(username, token))
                             .toString(), "edit-profile", "PUT", true);
+            editLink.setTitle("Edit profile");
+            editLink.setDescription("Edit some stuff in your profile");
             editLink.setRequestTemplate(UserController.getEditProfileTemplate());
             userResource.add(editLink);
         }
@@ -90,6 +95,8 @@ public class UserProfileController {
                 linkTo(methodOn(ReviewController.class).getUserReviews(token, username))
                         .toString(),
                 "reviews", "GET", true);
+        revLink.setTitle("Reviews");
+        revLink.setDescription("See what people think about you as a book holder/owner");
         userResource.add(revLink);
 
         return new ResponseEntity<UserResource>(userResource, HttpStatus.OK);
