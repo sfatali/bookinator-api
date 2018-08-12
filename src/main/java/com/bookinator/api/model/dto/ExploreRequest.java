@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Sabina on 4/14/2018.
  */
-public class BookFilterRequest {
+public class ExploreRequest {
     private String name;
     private String author;
     private int fieldId;
@@ -13,7 +13,7 @@ public class BookFilterRequest {
     private int cityId;
     private String topic;
 
-    public BookFilterRequest() {
+    public ExploreRequest() {
     }
 
     public String getName() {

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(value = "/")
-public class UserBookHoldingsController {
+public class BookHoldingController {
 
     @RequestMapping(value = "{username}/holdings", method = RequestMethod.GET, produces ={"application/hal+json"})
     HttpEntity getHoldings(@RequestHeader("Authorization") String token,

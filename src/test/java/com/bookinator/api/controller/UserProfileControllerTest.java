@@ -19,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(locations="classpath:test.properties")
 public class UserProfileControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -48,7 +50,8 @@ public class UserProfileControllerTest {
         // when:
         MockHttpServletResponse response
                 = this.mockMvc.perform(get("/johndoe/profile")
-                .header("Authorization", LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                .header("Authorization", LoginHelper.getToken(this, mockMvc,
+                        jacksonLoginTester, "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -78,7 +81,7 @@ public class UserProfileControllerTest {
         Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
         JSONObject linksJson = responseJson.getJSONObject("_links");
         Assert.assertTrue("Checking self is there", linksJson.has("self"));
-        Assert.assertTrue("Checking edit-profile is there", linksJson.has("edit-profile"));
+        Assert.assertTrue("Checking edit-user is there", linksJson.has("edit-user"));
         Assert.assertTrue("Checking home is there", linksJson.has("home"));
         Assert.assertTrue("Checking reviews is there", linksJson.has("reviews"));
 
@@ -89,10 +92,10 @@ public class UserProfileControllerTest {
         Assert.assertEquals(selfJson.getString("method"), HttpMethod.GET.toString());
         Assert.assertTrue(selfJson.getBoolean("authRequired"));
 
-        // Checking edit-profile link internals
-        JSONObject editJson = linksJson.getJSONObject("edit-profile");
-        Assert.assertEquals(editJson.getString("href"), linkTo(RegistrationControllerTest.class)
-                .slash("/johndoe/profile").toString());
+        // Checking edit-user link internals
+        JSONObject editJson = linksJson.getJSONObject("edit-user");
+        Assert.assertEquals(editJson.getString("href"), linkTo(UserProfileController.class)
+                .slash("/johndoe/user").toString());
         Assert.assertEquals(editJson.getString("method"), HttpMethod.PUT.toString());
         Assert.assertTrue(editJson.getBoolean("authRequired"));
         JSONArray editRequestTemplate = editJson.getJSONArray("requestTemplate");
@@ -172,7 +175,8 @@ public class UserProfileControllerTest {
         // when:
         MockHttpServletResponse response
                 = this.mockMvc.perform(get("/!/profile")
-                .header("Authorization", LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                .header("Authorization", LoginHelper.getToken(this, mockMvc,
+                        jacksonLoginTester, "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -187,7 +191,8 @@ public class UserProfileControllerTest {
         // when:
         MockHttpServletResponse response
                 = this.mockMvc.perform(get("/testuser/profile")
-                .header("Authorization", LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                .header("Authorization", LoginHelper.getToken(this, mockMvc,
+                        jacksonLoginTester, "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 

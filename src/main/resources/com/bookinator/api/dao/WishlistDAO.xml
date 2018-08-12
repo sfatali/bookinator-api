@@ -3,16 +3,16 @@
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace="com.bookinator.api.dao.WishlistDAO">
 
-    <insert id="addToWishlist" parameterType="com.bookinator.api.model.Wishlist">
-        INSERT INTO books_wish_list(user_id, book_id) VALUES(#{userId}, #{bookId});
+    <insert id="addToWishlist" parameterType="com.bookinator.api.model.Wish">
+        INSERT INTO book_wishes(user_id, book_id) VALUES(#{userId}, #{bookId});
     </insert>
 
-    <select id="count" parameterType="com.bookinator.api.model.Wishlist" resultType="int">
-        select count(*) from books_wish_list WHERE user_id = #{userId} AND book_id = #{bookId};
+    <select id="count" parameterType="com.bookinator.api.model.Wish" resultType="int">
+        select count(*) from book_wishes WHERE user_id = #{userId} AND book_id = #{bookId};
     </select>
 
-    <delete id="removeFromWishlist" parameterType="com.bookinator.api.model.Wishlist">
-        DELETE  from books_wish_list WHERE user_id = #{userId} AND book_id = #{bookId};
+    <delete id="removeFromWishlist" parameterType="com.bookinator.api.model.Wish">
+        DELETE  from book_wishes WHERE user_id = #{userId} AND book_id = #{bookId};
     </delete>
 
     <select id="getUserWishlist" parameterType="int" resultMap="BookDtoMap">
@@ -20,7 +20,7 @@
                                          coalesce(b.description, '') as description, coalesce(cast(b.year_published as varchar), '') as year_published,
                                          bht.name as holding_type, bst.name as status, f.name as field, c.name as city,
                                         round(avg(coalesce(r.score, 0)), 2) as owner_avg_rating
-        from books_wish_list l, books b
+        from book_wishes l, books b
             left join book_holding_types bht on b.holding_type_id = bht.id
             left join book_status_types bst on b.status_id = bst.id
             left join fields f on b.field_id = f.id
@@ -34,7 +34,7 @@
         order by b.name asc;
     </select>
 
-    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.BookFilterResponse">
+    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.ExploreResponse">
         <result property="id" column="id"/>
         <result property="ownerId" column="owner_id"/>
         <result property="ownerAvgRating" column="owner_avg_rating"/>

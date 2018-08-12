@@ -1,7 +1,6 @@
 package com.bookinator.api.controller;
 
 import com.bookinator.api.controller.helper.LoginHelper;
-import com.bookinator.api.model.Wishlist;
 import com.bookinator.api.model.dto.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
@@ -18,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(locations="classpath:test.properties")
 public class ExploreControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -144,7 +145,8 @@ public class ExploreControllerTest {
     @Test
     public void filterBooksAuthorizedSuccess() throws Exception {
         // when:
-        String token = LoginHelper.getToken(this, mockMvc, jacksonLoginTester);
+        String token = LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                "johndoe", "12345678");
         MockHttpServletResponse response
                 = this.mockMvc.perform(
                 get(String.format("/johndoe/explore?name=%s", "A Brief History of Time"))
@@ -173,8 +175,8 @@ public class ExploreControllerTest {
         // Checking book's links: add-to-wishlist
         Assert.assertTrue("Checking add-to-wishlist is there", bookLinks.has("add-to-wishlist"));
         JSONObject wishJson = bookLinks.getJSONObject("add-to-wishlist");
-        Assert.assertEquals(wishJson.getString("href"), linkTo(UserWishlistController.class)
-                .slash("/johndoe/wishlist").toString());
+        Assert.assertEquals(wishJson.getString("href"), linkTo(WishlistController.class)
+                .slash("/johndoe/wish").toString());
         Assert.assertEquals(wishJson.getString("method"), HttpMethod.POST.toString());
         Assert.assertTrue(wishJson.getBoolean("authRequired"));
         Assert.assertTrue("Checking requestTemplate is there", wishJson.has("requestTemplate"));
@@ -183,11 +185,11 @@ public class ExploreControllerTest {
         // Checking book's links: make-request
         Assert.assertTrue("Checking make-request is there", bookLinks.has("add-to-wishlist"));
         JSONObject reqJson = bookLinks.getJSONObject("make-request");
-        Assert.assertEquals(reqJson.getString("href"), linkTo(UserBookRequestsController.class)
+        Assert.assertEquals(reqJson.getString("href"), linkTo(BookRequestController.class)
                 .slash("/johndoe/requests").toString());
         Assert.assertEquals(reqJson.getString("method"), HttpMethod.POST.toString());
         Assert.assertTrue(reqJson.getBoolean("authRequired"));
-        Assert.assertTrue("Checking requestTemplate is there", wishJson.has("requestTemplate"));
+        Assert.assertTrue("Checking requestTemplate is there", reqJson.has("requestTemplate"));
         Assert.assertEquals(reqJson.getJSONArray("requestTemplate").length(), 5);
 
         // Checking links:

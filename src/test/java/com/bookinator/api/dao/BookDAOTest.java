@@ -1,9 +1,8 @@
 package com.bookinator.api.dao;
 
-import com.bookinator.api.dao.BookDAO;
 import com.bookinator.api.model.Book;
-import com.bookinator.api.model.dto.BookFilterRequest;
-import com.bookinator.api.model.dto.BookFilterResponse;
+import com.bookinator.api.model.dto.ExploreRequest;
+import com.bookinator.api.model.dto.ExploreResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +11,7 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -22,6 +22,7 @@ import java.util.logging.Logger;
  * Created by Sabina on 5/1/2018.
  */
 @RunWith(SpringRunner.class)
+@TestPropertySource(locations="classpath:test.properties")
 @MybatisTest
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @EnableTransactionManagement
@@ -40,7 +41,7 @@ public class BookDAOTest {
         testBook.setOwnerId(1);
         testBook.setHoldingTypeId(1);
         testBook.setStatusId(1);
-        testBook.setName("BookFilterResponse name");
+        testBook.setName("ExploreResponse name");
         testBook.setAuthors("author;");
         testBook.setFieldId(1);
         testBook.setYearPublished(2001);
@@ -207,8 +208,8 @@ public class BookDAOTest {
     public void testBooksFilter() {
         logger.info("Testing book filter: case when no seacrh params specified");
         // when no fields for filter are assigned, just all bookFilterResponses are returned
-        BookFilterRequest filterRequest = new BookFilterRequest();
-        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        ExploreRequest filterRequest = new ExploreRequest();
+        List<ExploreResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
         Assert.assertEquals(8, bookFilterResponses.size());
     }
 
@@ -218,9 +219,9 @@ public class BookDAOTest {
     @Test
     public void testBooksFilterByName() {
         logger.info("Testing book filter: case when name is specified");
-        BookFilterRequest filterRequest = new BookFilterRequest();
+        ExploreRequest filterRequest = new ExploreRequest();
         filterRequest.setName("The Lord of the Rings");
-        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        List<ExploreResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
         Assert.assertEquals(3, bookFilterResponses.size());
     }
 
@@ -230,9 +231,9 @@ public class BookDAOTest {
     @Test
     public void testBooksFilterByAuthor() {
         logger.info("Testing book filter: case when author is specified");
-        BookFilterRequest filterRequest = new BookFilterRequest();
+        ExploreRequest filterRequest = new ExploreRequest();
         filterRequest.setAuthor("Tolkien");
-        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        List<ExploreResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
         Assert.assertEquals(3, bookFilterResponses.size());
     }
 
@@ -242,13 +243,13 @@ public class BookDAOTest {
     @Test
     public void testBooksFilterByAllFields() {
         logger.info("Testing book filter: case when all params are specified");
-        BookFilterRequest filterRequest = new BookFilterRequest();
+        ExploreRequest filterRequest = new ExploreRequest();
         filterRequest.setName("The Lord of the Rings");
         filterRequest.setAuthor("Tolkien");
         filterRequest.setFieldId(1);
         filterRequest.setCityId(1);
         filterRequest.setTopic("fantasy");
-        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        List<ExploreResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
         Assert.assertEquals(3, bookFilterResponses.size());
     }
 
@@ -258,9 +259,9 @@ public class BookDAOTest {
     @Test
     public void testBooksFilterByYear() {
         logger.info("Testing book filter: case when publication year is specified");
-        BookFilterRequest filterRequest = new BookFilterRequest();
+        ExploreRequest filterRequest = new ExploreRequest();
         filterRequest.setYearPublished(1988);
-        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        List<ExploreResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
         Assert.assertEquals(1, bookFilterResponses.size());
     }
 
@@ -270,9 +271,9 @@ public class BookDAOTest {
     @Test
     public void testBooksFilterByField() {
         logger.info("Testing book filter: case when book's field is specified");
-        BookFilterRequest filterRequest = new BookFilterRequest();
+        ExploreRequest filterRequest = new ExploreRequest();
         filterRequest.setFieldId(5);
-        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        List<ExploreResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
         Assert.assertEquals(4, bookFilterResponses.size());
     }
 
@@ -282,9 +283,9 @@ public class BookDAOTest {
     @Test
     public void testBooksFilterByCity() {
         logger.info("Testing book filter: case when city of book owner is specified");
-        BookFilterRequest filterRequest = new BookFilterRequest();
+        ExploreRequest filterRequest = new ExploreRequest();
         filterRequest.setCityId(1);
-        List<BookFilterResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
+        List<ExploreResponse> bookFilterResponses = bookDAO.filterBooks(filterRequest);
         Assert.assertEquals(8, bookFilterResponses.size());
     }
 

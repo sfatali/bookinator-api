@@ -56,11 +56,13 @@ INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
 INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
   VALUES (4, 'sabina', '$2a$10$lYT0mOImwvCwtUyQwef2RO.JFjlqkzg/YgI5qbrz0VP6virgwzCjy',
           'Sabina', 'Fataliyeva', 1, '+358460000003', 'somemail4@gmail.com');
-
 INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
 VALUES (5, 'johndoe', '$2a$10$WLuIM6O9qJ6pE04Y3SU4iuPTsMn3N4sPfFlehEn8EKjFGrWM5Shtq',
         'John', 'Doe', 1, '+358460000004', 'somemail5@gmail.com');
-select setval('users_id_seq', 5);
+INSERT INTO users(id, username, password, name, surname, city_id, phone, email)
+VALUES (6, 'alien', '$2a$10$WLuIM6O9qJ6pE04Y3SU4iuPTsMn3N4sPfFlehEn8EKjFGrWM5Shtq',
+        'Alien', 'Frommars', 2, '+358460000004', 'somemail6@gmail.com');
+select setval('users_id_seq', 6);
 
 -- book status types
 INSERT INTO book_status_types(id, name) VALUES(0, 'Unknown');
@@ -103,10 +105,11 @@ INSERT INTO books(id, owner_id, holding_type_id, status_id, name, authors, year_
 select setval('books_id_seq', 8);
 
 -- books wish list
-INSERT INTO books_wish_list(id, user_id, book_id) VALUES(1, 3, 1);
-INSERT INTO books_wish_list(id, user_id, book_id) VALUES(2, 3, 2);
-INSERT INTO books_wish_list(id, user_id, book_id) VALUES(3, 3, 8);
-select setval('books_wish_list_id_seq', 3);
+INSERT INTO book_wishes(id, user_id, book_id) VALUES(1, 3, 1);
+INSERT INTO book_wishes(id, user_id, book_id) VALUES(2, 3, 2);
+INSERT INTO book_wishes(id, user_id, book_id) VALUES(3, 3, 8);
+INSERT INTO book_wishes(id, user_id, book_id) VALUES(4, 5, 1);
+select setval('book_wishes_id_seq', 4);
 
 -- holding request status types
 INSERT INTO holding_request_status_types(id, name) VALUES(1, 'Pending');

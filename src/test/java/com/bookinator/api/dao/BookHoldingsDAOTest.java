@@ -1,8 +1,8 @@
 package com.bookinator.api.dao;
 
-import com.bookinator.api.dao.BookHoldingsDAO;
 import com.bookinator.api.model.HoldingRequest;
-import com.bookinator.api.model.dto.UpdateHoldingRequestStatus;
+import com.bookinator.api.model.dto.BookRequest;
+import com.bookinator.api.model.dto.UpdateBookRequestStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +12,7 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -22,6 +23,7 @@ import java.util.logging.Logger;
  * Created by Sabina on 5/6/2018.
  */
 @RunWith(SpringRunner.class)
+@TestPropertySource(locations="classpath:test.properties")
 @MybatisTest
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @EnableTransactionManagement
@@ -104,7 +106,7 @@ public class BookHoldingsDAOTest extends RunListener {
     public void testStatusUpdate() {
         logger.info("Testing status update of book's holding request");
         bookHoldingsDAO.create(testHoldingRequest);
-        UpdateHoldingRequestStatus request = new UpdateHoldingRequestStatus();
+        UpdateBookRequestStatus request = new UpdateBookRequestStatus();
         request.setStatusId(3);
         request.setHoldingRequestId(testHoldingRequest.getId());
         bookHoldingsDAO.changeHoldingStatus(request);
@@ -120,7 +122,7 @@ public class BookHoldingsDAOTest extends RunListener {
     @Test
     public void testGetFreshRequests() {
         logger.info("Testing getting user's unresponded book requests");
-        List<com.bookinator.api.model.dto.HoldingRequest> requests =
+        List<BookRequest> requests =
                 bookHoldingsDAO.getFreshRequests(1);
         Assert.assertNotNull(requests);
         Assert.assertEquals(1, requests.size());
@@ -132,7 +134,7 @@ public class BookHoldingsDAOTest extends RunListener {
     @Test
     public void testGetApprovedRequests() {
         logger.info("Testing getting user's approved book requests");
-        List<com.bookinator.api.model.dto.HoldingRequest> requests =
+        List<BookRequest> requests =
                 bookHoldingsDAO.getApprovedRequests(4);
         Assert.assertNotNull(requests);
         Assert.assertEquals(1, requests.size());

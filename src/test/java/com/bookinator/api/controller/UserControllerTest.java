@@ -4,6 +4,8 @@ import com.bookinator.api.controller.helper.LoginHelper;
 import com.bookinator.api.model.User;
 import com.bookinator.api.model.dto.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -30,6 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @EnableTransactionManagement
+@TestPropertySource(locations="classpath:test.properties")
 public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -53,12 +57,156 @@ public class UserControllerTest {
 
     @Test
     @Transactional
+    public void registerSuccess() throws Exception {
+        // when:
+        MockHttpServletResponse response
+                = this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonTester.write(user).getJson()))
+                .andReturn().getResponse();
+
+        // then:
+        assertThat(response.getStatus()).as("Checking HTTP status")
+                .isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getContentAsString()).isEmpty();
+    }
+
+    @Test
+    public void registerServerError() throws Exception {
+        user.setUsername("thatssssaaaaaaaaaaveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryyyyyylo" +
+                "oooooooooonggggusernameeeeeeeeeeeeeeeeee");
+        // when:
+        MockHttpServletResponse response
+                = this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonTester.write(user).getJson()))
+                .andReturn().getResponse();
+
+        // then:
+        assertThat(response.getStatus()).as("Checking HTTP status")
+                .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        // checking links:
+        JSONObject responseJson = new JSONObject(response.getContentAsString());
+        Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
+        JSONObject linksJson = responseJson.getJSONObject("_links");
+        Assert.assertTrue("Checking home is there", linksJson.has("home"));
+    }
+
+    @Test
+    public void registerUsernameTaken() throws Exception {
+        user.setUsername("sabina");
+        // when:
+        MockHttpServletResponse response
+                = this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonTester.write(user).getJson()))
+                .andReturn().getResponse();
+
+        // then:
+        assertThat(response.getStatus()).as("Checking HTTP status")
+                .isEqualTo(HttpStatus.CONFLICT.value());
+
+        // checking links:
+        JSONObject responseJson = new JSONObject(response.getContentAsString());
+        Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
+        JSONObject linksJson = responseJson.getJSONObject("_links");
+        Assert.assertTrue("Checking home is there", linksJson.has("home"));
+    }
+
+    @Test
+    public void registerUsernameEmpty() throws Exception {
+        user.setUsername(null);
+        // when:
+        MockHttpServletResponse response
+                = this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonTester.write(user).getJson()))
+                .andReturn().getResponse();
+
+        // then:
+        assertThat(response.getStatus()).as("Checking HTTP status")
+                .isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        // checking links:
+        JSONObject responseJson = new JSONObject(response.getContentAsString());
+        Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
+        JSONObject linksJson = responseJson.getJSONObject("_links");
+        Assert.assertTrue("Checking home is there", linksJson.has("home"));
+    }
+
+    @Test
+    public void registerUsernameTooShort() throws Exception {
+        user.setUsername("1234");
+        // when:
+        MockHttpServletResponse response
+                = this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonTester.write(user).getJson()))
+                .andReturn().getResponse();
+
+        // then:
+        assertThat(response.getStatus()).as("Checking HTTP status")
+                .isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        // checking links:
+        JSONObject responseJson = new JSONObject(response.getContentAsString());
+        Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
+        JSONObject linksJson = responseJson.getJSONObject("_links");
+        Assert.assertTrue("Checking home is there", linksJson.has("home"));
+    }
+
+    @Test
+    public void registerPasswordEmpty() throws Exception {
+        user.setPassword(null);
+        // when:
+        MockHttpServletResponse response
+                = this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonTester.write(user).getJson()))
+                .andReturn().getResponse();
+
+        // then:
+        assertThat(response.getStatus()).as("Checking HTTP status")
+                .isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        // checking links:
+        JSONObject responseJson = new JSONObject(response.getContentAsString());
+        Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
+        JSONObject linksJson = responseJson.getJSONObject("_links");
+        Assert.assertTrue("Checking home is there", linksJson.has("home"));
+    }
+
+    @Test
+    public void registerInvalidCity() throws Exception {
+        user.setCityId(-100);
+        // when:
+        MockHttpServletResponse response
+                = this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jacksonTester.write(user).getJson()))
+                .andReturn().getResponse();
+
+        // then:
+        assertThat(response.getStatus()).as("Checking HTTP status")
+                .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        // checking links:
+        JSONObject responseJson = new JSONObject(response.getContentAsString());
+        Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
+        JSONObject linksJson = responseJson.getJSONObject("_links");
+        Assert.assertTrue("Checking home is there", linksJson.has("home"));
+    }
+
+    @Test
+    @Transactional
     public void editUserSuccess() throws Exception {
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(put("/johndoe/profile")
+                = this.mockMvc.perform(put("/johndoe/user")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jacksonTester.write(user).getJson()))
                 .andReturn().getResponse();
@@ -88,9 +236,10 @@ public class UserControllerTest {
         user.setId(2);
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(put("/johndoe/profile")
+                = this.mockMvc.perform(put("/johndoe/user")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jacksonTester.write(user).getJson()))
                 .andReturn().getResponse();
@@ -105,9 +254,10 @@ public class UserControllerTest {
     public void editUserWrongPath() throws Exception {
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(put("/johndoe2/profile")
+                = this.mockMvc.perform(put("/johndoe2/user")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jacksonTester.write(user).getJson()))
                 .andReturn().getResponse();
@@ -123,9 +273,10 @@ public class UserControllerTest {
         user.setName(null);
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(put("/johndoe/profile")
+                = this.mockMvc.perform(put("/johndoe/user")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jacksonTester.write(user).getJson()))
                 .andReturn().getResponse();
@@ -141,9 +292,10 @@ public class UserControllerTest {
         user.setSurname(null);
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(put("/johndoe/profile")
+                = this.mockMvc.perform(put("/johndoe/user")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jacksonTester.write(user).getJson()))
                 .andReturn().getResponse();
@@ -159,9 +311,10 @@ public class UserControllerTest {
         user.setCityId(-101);
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(put("/johndoe/profile")
+                = this.mockMvc.perform(put("/johndoe/user")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jacksonTester.write(user).getJson()))
                 .andReturn().getResponse();

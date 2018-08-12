@@ -15,7 +15,7 @@
         select * from holding_requests where id = #{id}
     </select>
 
-    <update id="changeHoldingStatus" parameterType="com.bookinator.api.model.dto.UpdateHoldingRequestStatus">
+    <update id="changeHoldingStatus" parameterType="com.bookinator.api.model.dto.UpdateBookRequestStatus">
         UPDATE holding_requests set status_id = #{statusId}, date_updated = now()
         WHERE id = #{holdingRequestId};
     </update>
@@ -46,7 +46,7 @@
         order by date_created desc;
     </select>
 
-    <resultMap id="HoldingDtoMap" type="com.bookinator.api.model.dto.HoldingRequest">
+    <resultMap id="HoldingDtoMap" type="com.bookinator.api.model.dto.BookRequest">
         <result property="id" column="id"/>
         <result property="date" column="date_created"/>
         <result property="requestMessage" column="message"/>

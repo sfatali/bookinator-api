@@ -87,7 +87,7 @@ public class BookController {
             } else {
                 // link relations to add to wishlist
                 CustomLinkWithRequestTemplate wishlistLink = new CustomLinkWithRequestTemplate(
-                        linkTo(methodOn(UserWishlistController.class)
+                        linkTo(methodOn(WishlistController.class)
                                 .addToWishlist(null, username, token))
                                 .toString(), "add-to-wishlist", "POST", true);
                 wishlistLink.setRequestTemplate(WishlistHelper.getWishlistUrlTemplate());
@@ -96,7 +96,7 @@ public class BookController {
                 // link relations to add to request the book
                 if(book.getStatus().equals("Available") || book.getStatus().equals("In search")) {
                     CustomLinkWithRequestTemplate reqLink = new CustomLinkWithRequestTemplate(
-                            linkTo(methodOn(UserBookRequestsController.class)
+                            linkTo(methodOn(BookRequestController.class)
                                     .makeRequest(token, username, null))
                                     .toString(), "make-request", "POST", true);
                     reqLink.setRequestTemplate(BookRequestsHelper.getBookRequestsTemplate());
@@ -239,6 +239,17 @@ public class BookController {
                           @PathVariable String username,
                           @RequestHeader("Authorization") String token,
                           @PathVariable("bookId") String bookIdStr) {
+        try {
+            int bookId = Integer.parseInt(bookIdStr);
+            book.setId(bookId);
+            if(bookId <= 0) throw new Exception();
+        } catch (Exception ex) {
+            return new ResponseEntity<ErrorResource>
+                    (GeneralHelper.getErrorResource(400, "Bad Request",
+                            "Valid book ID must be specified", true),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         // checking that the book belongs to the user:
         int userId = (int) GeneralHelper.getUserIdFromToken(token);
         if(userId != book.getOwnerId()) {
@@ -247,15 +258,7 @@ public class BookController {
                             "You cannot update someone else's book", true),
                     HttpStatus.FORBIDDEN);
         }
-        if(book.getOwnerId() == 0) {
-            book.setOwnerId((int) GeneralHelper.getUserIdFromToken(token));
-        }
-        if(book.getId() == 0) {
-            return new ResponseEntity<ErrorResource>(
-                    GeneralHelper.getErrorResource(400, "Bad Request",
-                            "Book ID must be specified", true),
-                    HttpStatus.BAD_REQUEST);
-        }
+
         try {
             com.bookinator.api.model.Book bookFromDB = bookDAO.getBookById(book.getId());
             if (bookFromDB == null) {
@@ -264,6 +267,13 @@ public class BookController {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setLocation(linkTo(BookController.class).slash(book.getId()).toUri());
                 return new ResponseEntity<>(headers, HttpStatus.CREATED);
+            }
+
+            if(userId != bookFromDB.getOwnerId()) {
+                return new ResponseEntity<ErrorResource>(
+                        GeneralHelper.getErrorResource(403, "Forbidden",
+                                "You cannot update someone else's book", true),
+                        HttpStatus.FORBIDDEN);
             }
             bookDAO.update(book);
         } catch (Exception ex) {

@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 @RunWith(SpringRunner.class)
 // If separate database for testing is needed, this is the way:
-//@TestPropertySource(locations="classpath:test.properties")
+@TestPropertySource(locations="classpath:test.properties")
 @MybatisTest
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @EnableTransactionManagement

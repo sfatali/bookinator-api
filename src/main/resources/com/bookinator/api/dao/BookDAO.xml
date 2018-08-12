@@ -28,7 +28,7 @@
         delete from books WHERE id = #{id};
     </delete>
 
-    <select id="filterBooks" parameterType="com.bookinator.api.model.dto.BookFilterRequest"
+    <select id="filterBooks" parameterType="com.bookinator.api.model.dto.ExploreRequest"
             resultMap="BookDtoMap">
         select b.id, b.owner_id, b.name, coalesce(b.authors, '') as authors, coalesce(b.topics, '') as topics,
             coalesce(b.description, '') as description, coalesce(cast(b.year_published as varchar), '') as year_published,
@@ -114,7 +114,7 @@
         <result property="description" column="description"/>
     </resultMap>
 
-    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.BookFilterResponse">
+    <resultMap id="BookDtoMap" type="com.bookinator.api.model.dto.ExploreResponse">
         <result property="id" column="id"/>
         <result property="ownerId" column="owner_id"/>
         <result property="ownerAvgRating" column="owner_avg_rating"/>

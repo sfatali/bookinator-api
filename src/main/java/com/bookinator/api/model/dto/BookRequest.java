@@ -5,7 +5,7 @@ import com.bookinator.api.model.Util;
 /**
  * Created by Sabina on 5/6/2018.
  */
-public class HoldingRequest {
+public class BookRequest {
     private int id;
     private Util sender;
     private Util book;
@@ -13,7 +13,7 @@ public class HoldingRequest {
     private String date;
     private String requestMessage;
 
-    public HoldingRequest() {
+    public BookRequest() {
     }
 
     public int getId() {

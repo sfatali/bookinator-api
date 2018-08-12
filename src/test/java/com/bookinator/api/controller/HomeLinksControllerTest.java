@@ -47,7 +47,8 @@ public class HomeLinksControllerTest {
         MockHttpServletResponse response
                 = this.mockMvc.perform(get("/johndoe/home")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -97,7 +98,7 @@ public class HomeLinksControllerTest {
 
         // Checking wishlist link internals:
         JSONObject wishlistJson = linksJson.getJSONObject("wishlist");
-        Assert.assertEquals(wishlistJson.getString("href"), linkTo(methodOn(UserWishlistController.class)
+        Assert.assertEquals(wishlistJson.getString("href"), linkTo(methodOn(WishlistController.class)
                 .getUserWishlist("johndoe", "token")).toString());
         Assert.assertEquals(wishlistJson.getString("method"), HttpMethod.GET.toString());
         Assert.assertTrue(wishlistJson.getBoolean("authRequired"));
@@ -112,7 +113,7 @@ public class HomeLinksControllerTest {
         //Checking book-requests link internals:
         JSONObject reqJson = linksJson.getJSONObject("book-requests");
         Assert.assertEquals(reqJson.getString("href"),
-                linkTo(methodOn(UserBookRequestsController.class)
+                linkTo(methodOn(BookRequestController.class)
                 .getRequests("token", "johndoe")).toString());
         Assert.assertEquals(reqJson.getString("method"), HttpMethod.GET.toString());
         Assert.assertTrue(reqJson.getBoolean("authRequired"));
@@ -120,7 +121,7 @@ public class HomeLinksControllerTest {
         //Checking book-requests link internals:
         JSONObject holdJson = linksJson.getJSONObject("book-holdings");
         Assert.assertEquals(holdJson.getString("href"),
-                linkTo(methodOn(UserBookHoldingsController.class)
+                linkTo(methodOn(BookHoldingController.class)
                         .getHoldings("token", "johndoe")).toString());
         Assert.assertEquals(holdJson.getString("method"), HttpMethod.GET.toString());
         Assert.assertTrue(holdJson.getBoolean("authRequired"));
@@ -152,7 +153,8 @@ public class HomeLinksControllerTest {
         MockHttpServletResponse response
                 = this.mockMvc.perform(post("/johndoe/home")
                 .header("Authorization",
-                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester))
+                        LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
+                                "johndoe", "12345678"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 

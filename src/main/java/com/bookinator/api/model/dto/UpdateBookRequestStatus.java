@@ -3,11 +3,11 @@ package com.bookinator.api.model.dto;
 /**
  * Created by Sabina on 5/6/2018.
  */
-public class UpdateHoldingRequestStatus {
+public class UpdateBookRequestStatus {
     int statusId;
     int holdingRequestId;
 
-    public UpdateHoldingRequestStatus() {
+    public UpdateBookRequestStatus() {
     }
 
     public int getStatusId() {

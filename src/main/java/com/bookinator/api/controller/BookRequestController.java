@@ -4,8 +4,8 @@ import com.bookinator.api.controller.helpers.GeneralHelper;
 import com.bookinator.api.dao.BookDAO;
 import com.bookinator.api.dao.BookHoldingsDAO;
 import com.bookinator.api.model.Book;
-import com.bookinator.api.model.dto.HoldingRequest;
-import com.bookinator.api.model.dto.UpdateHoldingRequestStatus;
+import com.bookinator.api.model.dto.BookRequest;
+import com.bookinator.api.model.dto.UpdateBookRequestStatus;
 import com.bookinator.api.resources.BookHoldingRawResource;
 import com.bookinator.api.resources.BookHoldingResource;
 import com.bookinator.api.resources.ErrorResource;
@@ -29,7 +29,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping(value = "/")
-public class UserBookRequestsController {
+public class BookRequestController {
 
     @Autowired
     private BookHoldingsDAO bookHoldingsDAO;
@@ -45,7 +45,7 @@ public class UserBookRequestsController {
                             "You cannot access someone else's book requests", true),
                     HttpStatus.FORBIDDEN);
         }
-        List<HoldingRequest> requests;
+        List<BookRequest> requests;
         try {
             int id = (int) GeneralHelper.getUserIdFromToken(token);
             requests = bookHoldingsDAO.getFreshRequests(id);
@@ -61,13 +61,13 @@ public class UserBookRequestsController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
         List<BookHoldingResource> reqResources = new ArrayList<>();
-        for(HoldingRequest req : requests) {
+        for(BookRequest req : requests) {
             BookHoldingResource res = getHoldingResource(req);
-            CustomLink self = new CustomLink(linkTo(methodOn(UserBookRequestsController.class)
+            CustomLink self = new CustomLink(linkTo(methodOn(BookRequestController.class)
                     .getRequest(token, username, String.valueOf(req.getId())))
                     .toString(), "self", "GET", true);
             res.add(self);
-            CustomLink deleteLink = new CustomLink(linkTo(methodOn(UserBookRequestsController.class)
+            CustomLink deleteLink = new CustomLink(linkTo(methodOn(BookRequestController.class)
                     .getRequest(token, username, String.valueOf(req.getId())))
                     .toString(), "decline-request", "PUT", true);
             res.add(deleteLink);
@@ -75,7 +75,7 @@ public class UserBookRequestsController {
         }
         ResourceWithEmbeddedGenericSupport resource = new ResourceWithEmbeddedGenericSupport();
         CustomLink selfLink = new CustomLink(
-                linkTo(methodOn(UserBookRequestsController.class)
+                linkTo(methodOn(BookRequestController.class)
                         .getRequests(token, username))
                         .toString(), "self", "GET", true);
         resource.add(selfLink);
@@ -127,7 +127,7 @@ public class UserBookRequestsController {
         resource.setRequestId(request.getId());
         resource.setSenderId(request.getSenderId());
         resource.setStatusId(resource.getStatusId());
-        CustomLink self = new CustomLink(linkTo(methodOn(UserBookRequestsController.class)
+        CustomLink self = new CustomLink(linkTo(methodOn(BookRequestController.class)
                 .getRequest(token, username, reqIDStr))
                 .toString(), "self", "GET", true);
         resource.add(self);
@@ -180,7 +180,7 @@ public class UserBookRequestsController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(linkTo(methodOn(UserBookRequestsController.class)
+        headers.setLocation(linkTo(methodOn(BookRequestController.class)
                         .getRequest(token, username, String.valueOf(request.getId()))).toUri());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
@@ -214,7 +214,7 @@ public class UserBookRequestsController {
                                 "Only receiver of request can decline it.", true),
                         HttpStatus.FORBIDDEN);
             }
-            UpdateHoldingRequestStatus updateHoldingRequestStatus = new UpdateHoldingRequestStatus();
+            UpdateBookRequestStatus updateHoldingRequestStatus = new UpdateBookRequestStatus();
             updateHoldingRequestStatus.setHoldingRequestId(reqId);
             updateHoldingRequestStatus.setStatusId(3);
             bookHoldingsDAO.changeHoldingStatus(updateHoldingRequestStatus);
@@ -230,12 +230,12 @@ public class UserBookRequestsController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(linkTo(methodOn(UserBookRequestsController.class)
+        headers.setLocation(linkTo(methodOn(BookRequestController.class)
                 .getRequest(token, username, String.valueOf(request.getId()))).toUri());
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    private BookHoldingResource getHoldingResource(HoldingRequest request) {
+    private BookHoldingResource getHoldingResource(BookRequest request) {
         BookHoldingResource res = new BookHoldingResource();
         res.setRequestId(request.getId());
         res.setBook(request.getBook());

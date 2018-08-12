@@ -1,7 +1,7 @@
 package com.bookinator.api.dao;
 
-import com.bookinator.api.model.Wishlist;
-import com.bookinator.api.model.dto.BookFilterResponse;
+import com.bookinator.api.model.Wish;
+import com.bookinator.api.model.dto.ExploreResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,25 +16,25 @@ public interface WishlistDAO {
      * Add to wishlist
      * @param request request
      */
-    void addToWishlist(Wishlist request);
+    void addToWishlist(Wish request);
 
     /**
      * Remove from wishlist
      * @param request request
      */
-    void removeFromWishlist(Wishlist request);
+    void removeFromWishlist(Wish request);
 
     /**
      * Get books from user wishlist
      * @param id user id
      * @return books in wishlist
      */
-    List<BookFilterResponse> getUserWishlist(@Param("id") int id);
+    List<ExploreResponse> getUserWishlist(@Param("id") int id);
 
     /**
      * Count books in user wishlist (no idea why this is even needed...)
      * @param wishlist
      * @return
      */
-    int count(Wishlist wishlist);
+    int count(Wish wishlist);
 }

@@ -3,8 +3,8 @@ package com.bookinator.api.controller;
 import com.bookinator.api.controller.helpers.BookRequestsHelper;
 import com.bookinator.api.controller.helpers.GeneralHelper;
 import com.bookinator.api.dao.WishlistDAO;
-import com.bookinator.api.model.Wishlist;
-import com.bookinator.api.model.dto.BookFilterResponse;
+import com.bookinator.api.model.Wish;
+import com.bookinator.api.model.dto.ExploreResponse;
 import com.bookinator.api.resources.BookFilterResource;
 import com.bookinator.api.resources.ErrorResource;
 import com.bookinator.api.resources.util.*;
@@ -26,7 +26,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping(value = "/")
-public class UserWishlistController {
+public class WishlistController {
     @Autowired
     private WishlistDAO wishlistDAO;
 
@@ -46,7 +46,7 @@ public class UserWishlistController {
                             "You cannot access someone else's wishlist.", true),
                     HttpStatus.FORBIDDEN);
         }
-        List<BookFilterResponse> wishlistBooks;
+        List<ExploreResponse> wishlistBooks;
         try {
             // getting user id from token
             int userId = (int) GeneralHelper.getUserIdFromToken(token);
@@ -66,16 +66,16 @@ public class UserWishlistController {
         }
 
         List<BookFilterResource> bookResources = new ArrayList<>();
-        for (BookFilterResponse book : wishlistBooks) {
+        for (ExploreResponse book : wishlistBooks) {
             BookFilterResource bookResource = ExploreController.getBookFilterResource(book);
             CustomLinkWithUrlTemplate removeLink = new CustomLinkWithUrlTemplate(
-                    linkTo(methodOn(UserWishlistController.class)
+                    linkTo(methodOn(WishlistController.class)
                             .removeFromWishlist(username, String.valueOf(book.getId()), token)).toString(),
                     "remove", "DELETE", true);
             removeLink.setUrlTemplate(getBookRemoveTemplate());
             bookResource.add(removeLink);
             CustomLinkWithRequestTemplate reqLink = new CustomLinkWithRequestTemplate(
-                    linkTo(methodOn(UserBookRequestsController.class)
+                    linkTo(methodOn(BookRequestController.class)
                             .makeRequest(token, username, null))
                             .toString(), "make-request", "POST", true);
             reqLink.setRequestTemplate(BookRequestsHelper.getBookRequestsTemplate());
@@ -86,7 +86,7 @@ public class UserWishlistController {
         ResourceWithEmbeddedGenericSupport resource = new ResourceWithEmbeddedGenericSupport();
         resource.embedResource("books", bookResources);
         CustomLink selfLink = new CustomLink(
-                linkTo(methodOn(UserWishlistController.class)
+                linkTo(methodOn(WishlistController.class)
                         .getUserWishlist(username, token)).toString(), "self", "GET", true);
         //selfLink.setRequestTemplate(WishlistHelper.getWishlistUrlTemplate());
         resource.add(selfLink);
@@ -98,8 +98,8 @@ public class UserWishlistController {
         return new ResponseEntity<ResourceWithEmbeddedGenericSupport>(resource, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "{username}/wishlist", method = RequestMethod.POST)
-    public HttpEntity addToWishlist(@RequestBody Wishlist wishlist,
+    @RequestMapping(value = "{username}/wish", method = RequestMethod.POST)
+    public HttpEntity addToWishlist(@RequestBody Wish wishlist,
                              @PathVariable("username") String username,
                              @RequestHeader("Authorization") String token) {
         if(wishlist.getBookId() == 0) {
@@ -135,7 +135,7 @@ public class UserWishlistController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{username}/wishlist/{bookId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{username}/wish/{bookId}", method = RequestMethod.DELETE)
     HttpEntity removeFromWishlist(@PathVariable("username") String username,
                                   @PathVariable("bookId") String bookIdStr,
                                   @RequestHeader("Authorization") String token) {
@@ -148,7 +148,7 @@ public class UserWishlistController {
                     GeneralHelper.getErrorResource(400, "Bad Request", ex.getMessage(), true),
                     HttpStatus.BAD_REQUEST);
         }
-        Wishlist wishlist = new Wishlist();
+        Wish wishlist = new Wish();
         wishlist.setUserId((int) GeneralHelper.getUserIdFromToken(token));
         wishlist.setBookId(bookId);
         try {

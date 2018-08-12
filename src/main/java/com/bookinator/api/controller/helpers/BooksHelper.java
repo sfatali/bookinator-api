@@ -2,7 +2,6 @@ package com.bookinator.api.controller.helpers;
 
 import com.bookinator.api.controller.BookController;
 import com.bookinator.api.model.dto.Book;
-import com.bookinator.api.model.dto.BookFilterRequest;
 import com.bookinator.api.resources.BookDtoResource;
 import com.bookinator.api.resources.util.CustomLink;
 import com.bookinator.api.resources.util.RequestTemplateItem;

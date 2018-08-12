@@ -1,7 +1,8 @@
 package com.bookinator.api.dao;
 
 import com.bookinator.api.model.HoldingRequest;
-import com.bookinator.api.model.dto.UpdateHoldingRequestStatus;
+import com.bookinator.api.model.dto.BookRequest;
+import com.bookinator.api.model.dto.UpdateBookRequestStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,19 +30,19 @@ public interface BookHoldingsDAO {
      * Changing status of the request
      * @param request request
      */
-    void changeHoldingStatus(UpdateHoldingRequestStatus request);
+    void changeHoldingStatus(UpdateBookRequestStatus request);
 
     /**
      * Getting user's unresponded requests - in a readable way
      * @param userId user id
      * @return requests
      */
-    List<com.bookinator.api.model.dto.HoldingRequest> getFreshRequests(@Param("userId") int userId);
+    List<BookRequest> getFreshRequests(@Param("userId") int userId);
 
     /**
      * Getting user's approved requests - in a readable way
      * @param userId user id
      * @return requests
      */
-    List<com.bookinator.api.model.dto.HoldingRequest> getApprovedRequests(@Param("userId") int userId);
+    List<BookRequest> getApprovedRequests(@Param("userId") int userId);
 }

@@ -81,10 +81,10 @@ public class UserProfileController {
         if(GeneralHelper.isUserAccessingOwnResources(token, username)) {
             // adding edit link
             CustomLinkWithRequestTemplate editLink = new CustomLinkWithRequestTemplate(
-                    linkTo(methodOn(UserProfileController.class)
-                            .getProfile(username, token))
-                            .toString(), "edit-profile", "PUT", true);
-            editLink.setTitle("Edit profile");
+                    linkTo(methodOn(UserController.class)
+                            .updateUser(null, username, token))
+                            .toString(), "edit-user", "PUT", true);
+            editLink.setTitle("Edit user");
             editLink.setDescription("Edit some stuff in your profile");
             editLink.setRequestTemplate(UserController.getEditProfileTemplate());
             userResource.add(editLink);

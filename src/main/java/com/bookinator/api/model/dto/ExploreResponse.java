@@ -3,7 +3,7 @@ package com.bookinator.api.model.dto;
 /**
  * Created by Sabina on 5/5/2018.
  */
-public class BookFilterResponse {
+public class ExploreResponse {
     private int id;
     private int ownerId;
     private double ownerAvgRating;
@@ -17,7 +17,7 @@ public class BookFilterResponse {
     private String description;
     private String city;
 
-    public BookFilterResponse() {
+    public ExploreResponse() {
     }
 
     public int getId() {

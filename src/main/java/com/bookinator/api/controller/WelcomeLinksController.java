@@ -37,7 +37,8 @@ public class WelcomeLinksController {
 
         // Register link:
         CustomLinkWithRequestTemplate registerLink =
-                new CustomLinkWithRequestTemplate(linkTo(RegistrationController.class).slash("/register").toString(),
+                new CustomLinkWithRequestTemplate(linkTo(UserController.class)
+                        .slash("/user").toString(),
                         "register", "POST", false);
         registerLink.setTitle("Register");
         registerLink.setDescription("Create your user account and embrace the full power of Bookinator!");

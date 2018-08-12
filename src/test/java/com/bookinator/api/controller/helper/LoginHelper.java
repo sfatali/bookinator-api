@@ -19,11 +19,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  */
 public class LoginHelper {
     public static String getToken(Object testInstance, MockMvc mockMvc,
-                                  JacksonTester<LoginRequest> jacksonLoginTester) throws Exception {
+                                   JacksonTester<LoginRequest> jacksonLoginTester,
+                                  String username, String password) throws Exception {
         JacksonTester.initFields(testInstance, new ObjectMapper());
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("johndoe");
-        loginRequest.setPassword("12345678");
+        loginRequest.setUsername(username);
+        loginRequest.setPassword(password);
 
         MockHttpServletResponse response
                 = mockMvc.perform(post("/login")

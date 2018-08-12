@@ -50,7 +50,7 @@ CREATE TABLE books(
   description text DEFAULT ''
 );
 
-CREATE TABLE books_wish_list(
+CREATE TABLE book_wishes(
   id serial UNIQUE,
   date_created TIMESTAMP DEFAULT NOW(),
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,

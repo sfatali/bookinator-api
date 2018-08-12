@@ -72,7 +72,7 @@ public class HomeLinksController {
 
         // View your wishlist:
         CustomLink wishlistLink = new CustomLink(
-                linkTo(methodOn(UserWishlistController.class)
+                linkTo(methodOn(WishlistController.class)
                         .getUserWishlist(username, token))
                         .toString(), "wishlist", "GET", true);
         wishlistLink.setTitle("Wishlist");
@@ -90,7 +90,7 @@ public class HomeLinksController {
 
         // View book requests:
         CustomLink requestLink = new CustomLink(
-                linkTo(methodOn(UserBookRequestsController.class)
+                linkTo(methodOn(BookRequestController.class)
                         .getRequests(token, username))
                         .toString(), "book-requests", "GET", true);
         requestLink.setTitle("Book requests");
@@ -99,7 +99,7 @@ public class HomeLinksController {
 
         // view book holdings:
         CustomLink holdingLink = new CustomLink(
-                linkTo(methodOn(UserBookHoldingsController.class)
+                linkTo(methodOn(BookHoldingController.class)
                         .getHoldings(token, username))
                         .toString(), "book-holdings", "GET", true);
         holdingLink.setTitle("Book holdings");

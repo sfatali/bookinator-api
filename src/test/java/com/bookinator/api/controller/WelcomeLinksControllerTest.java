@@ -65,8 +65,8 @@ public class WelcomeLinksControllerTest {
 
         // Checking register link internals
         JSONObject regJson = linksJson.getJSONObject("register");
-        Assert.assertEquals(regJson.getString("href"), linkTo(RegistrationControllerTest.class)
-                .slash("/register").toString());
+        Assert.assertEquals(regJson.getString("href"), linkTo(UserController.class)
+                .slash("/user").toString());
         Assert.assertEquals(regJson.getString("method"), HttpMethod.POST.toString());
         Assert.assertFalse(regJson.getBoolean("authRequired"));
 

@@ -6,8 +6,8 @@ import com.bookinator.api.controller.helpers.GeneralHelper;
 import com.bookinator.api.controller.helpers.WishlistHelper;
 import com.bookinator.api.dao.BookDAO;
 import com.bookinator.api.dao.UserDAO;
-import com.bookinator.api.model.dto.BookFilterRequest;
-import com.bookinator.api.model.dto.BookFilterResponse;
+import com.bookinator.api.model.dto.ExploreRequest;
+import com.bookinator.api.model.dto.ExploreResponse;
 import com.bookinator.api.resources.BookFilterResource;
 import com.bookinator.api.resources.ErrorResource;
 import com.bookinator.api.resources.util.CustomLink;
@@ -44,7 +44,7 @@ public class ExploreController {
                            @RequestParam(value = "yearPublished", required = false) String yearPublished,
                            @RequestParam(value = "cityId", required = false) String cityId,
                            @RequestParam(value = "topic", required = false) String topic) {
-        BookFilterRequest request = new BookFilterRequest();
+        ExploreRequest request = new ExploreRequest();
         if(name != null && name.length() != 0) {
             request.setName(name);
         }
@@ -85,7 +85,7 @@ public class ExploreController {
             }
         }
         // everything is validated, let's get the data now
-        List<BookFilterResponse> books;
+        List<ExploreResponse> books;
         try {
             books = bookDAO.filterBooks(request);
             if(books == null || books.size() == 0) {
@@ -104,7 +104,7 @@ public class ExploreController {
         }
         ResourceWithEmbeddedGenericSupport resource = new ResourceWithEmbeddedGenericSupport();
         List<BookFilterResource> bookFilterResourceList = new ArrayList<>();
-        for(BookFilterResponse book : books) {
+        for(ExploreResponse book : books) {
             BookFilterResource bookResource = getBookFilterResource(book);
             bookFilterResourceList.add(bookResource);
         }
@@ -151,7 +151,7 @@ public class ExploreController {
                     HttpStatus.FORBIDDEN);
         }
 
-        BookFilterRequest request = new BookFilterRequest();
+        ExploreRequest request = new ExploreRequest();
         if(name != null && name.length() != 0) {
             request.setName(name);
         }
@@ -190,7 +190,7 @@ public class ExploreController {
             }
         }
         // everything is validated, let's get the data now
-        List<BookFilterResponse> books;
+        List<ExploreResponse> books;
         try {
             books = bookDAO.filterBooks(request);
             if(books == null || books.size() == 0) {
@@ -209,13 +209,13 @@ public class ExploreController {
         }
         ResourceWithEmbeddedGenericSupport resource = new ResourceWithEmbeddedGenericSupport();
         List<BookFilterResource> bookFilterResourceList = new ArrayList<>();
-        for(BookFilterResponse book : books) {
+        for(ExploreResponse book : books) {
             BookFilterResource bookResource = getBookFilterResource(book);
             // checking if the book belongs to user
             if(book.getOwnerId() != GeneralHelper.getUserIdFromToken(token)) {
                 // link relations to add to wishlist
                 CustomLinkWithRequestTemplate wishlistLink = new CustomLinkWithRequestTemplate(
-                        linkTo(methodOn(UserWishlistController.class)
+                        linkTo(methodOn(WishlistController.class)
                                 .addToWishlist(null, username, token))
                                 .toString(), "add-to-wishlist", "POST", true);
                 wishlistLink.setRequestTemplate(WishlistHelper.getWishlistUrlTemplate());
@@ -224,7 +224,7 @@ public class ExploreController {
                 // link relations to add to request the book
                 if(book.getStatus().equals("Available") || book.getStatus().equals("In search")) {
                     CustomLinkWithRequestTemplate reqLink = new CustomLinkWithRequestTemplate(
-                            linkTo(methodOn(UserBookRequestsController.class)
+                            linkTo(methodOn(BookRequestController.class)
                                     .makeRequest(token, username, null))
                                     .toString(), "make-request", "POST", true);
                     reqLink.setRequestTemplate(BookRequestsHelper.getBookRequestsTemplate());
@@ -248,7 +248,7 @@ public class ExploreController {
         return new ResponseEntity<ResourceWithEmbeddedGenericSupport>(resource, HttpStatus.OK);
     }
 
-    public static BookFilterResource getBookFilterResource(BookFilterResponse book) {
+    public static BookFilterResource getBookFilterResource(ExploreResponse book) {
         BookFilterResource bookResource = new BookFilterResource();
         CustomLink self = new CustomLink(linkTo(BookController.class).slash("/books/"
                 +book.getId()).toString(),

@@ -3,11 +3,11 @@ package com.bookinator.api.model;
 /**
  * Created by Sabina on 5/6/2018.
  */
-public class Wishlist {
+public class Wish {
     private int userId;
     private int bookId;
 
-    public Wishlist() {
+    public Wish() {
     }
 
     public int getUserId() {

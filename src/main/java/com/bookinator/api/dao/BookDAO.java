@@ -1,8 +1,8 @@
 package com.bookinator.api.dao;
 
 import com.bookinator.api.model.Book;
-import com.bookinator.api.model.dto.BookFilterRequest;
-import com.bookinator.api.model.dto.BookFilterResponse;
+import com.bookinator.api.model.dto.ExploreRequest;
+import com.bookinator.api.model.dto.ExploreResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -43,7 +43,7 @@ public interface BookDAO {
      * @param filter parameters for search
      * @return list of books
      */
-    List<BookFilterResponse> filterBooks(BookFilterRequest filter);
+    List<ExploreResponse> filterBooks(ExploreRequest filter);
 
     /**
      * Returns user's books
