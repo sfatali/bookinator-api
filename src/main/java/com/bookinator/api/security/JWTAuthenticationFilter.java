@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import static com.bookinator.api.security.SecurityConstants.*;
@@ -67,5 +68,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+
+        PrintWriter out = res.getWriter();
+        res.setContentType("application/hal+json");
+        res.setCharacterEncoding("UTF-8");
+        out.print("{\"_links\": {\"home\": {\"href\": \"http://localhost:8080/"+
+                username+"/home\",\"method\": \"GET\",\"authRequired\": true}}}");
+        out.flush();
     }
 }

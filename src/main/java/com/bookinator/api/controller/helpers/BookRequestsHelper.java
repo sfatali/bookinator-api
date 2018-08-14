@@ -1,5 +1,7 @@
 package com.bookinator.api.controller.helpers;
 
+import com.bookinator.api.model.dto.BookRequest;
+import com.bookinator.api.resources.BookHoldingResource;
 import com.bookinator.api.resources.util.RequestTemplateItem;
 
 import java.util.ArrayList;
@@ -29,5 +31,16 @@ public class BookRequestsHelper {
         requestMessage.setMaxLength(500);
         reqTemplate.add(requestMessage);
         return reqTemplate;
+    }
+
+    public static BookHoldingResource getHoldingResource(BookRequest request) {
+        BookHoldingResource res = new BookHoldingResource();
+        res.setRequestId(request.getId());
+        res.setBook(request.getBook());
+        res.setDate(request.getDate());
+        res.setParentBook(request.getParentBook());
+        res.setRequestMessage(request.getRequestMessage());
+        res.setSender(request.getSender());
+        return res;
     }
 }

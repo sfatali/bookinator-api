@@ -71,7 +71,7 @@ public class WishlistController {
             CustomLinkWithUrlTemplate removeLink = new CustomLinkWithUrlTemplate(
                     linkTo(methodOn(WishlistController.class)
                             .removeFromWishlist(username, String.valueOf(book.getId()), token)).toString(),
-                    "remove", "DELETE", true);
+                    "remove-from-wishlist", "DELETE", true);
             removeLink.setUrlTemplate(getBookRemoveTemplate());
             bookResource.add(removeLink);
             CustomLinkWithRequestTemplate reqLink = new CustomLinkWithRequestTemplate(

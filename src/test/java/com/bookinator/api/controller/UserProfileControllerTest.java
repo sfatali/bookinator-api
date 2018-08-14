@@ -149,11 +149,11 @@ public class UserProfileControllerTest {
         Assert.assertTrue(homeJson.getBoolean("authRequired"));
 
         // Checking reviews link internals:
-        JSONObject reviewsJson = linksJson.getJSONObject("reviews");
+        /*JSONObject reviewsJson = linksJson.getJSONObject("reviews");
         Assert.assertEquals(reviewsJson.getString("href"), linkTo(ReviewController.class)
                 .slash("/johndoe/profile/reviews").toString());
         Assert.assertEquals(reviewsJson.getString("method"), HttpMethod.GET.toString());
-        Assert.assertTrue(reviewsJson.getBoolean("authRequired"));
+        Assert.assertTrue(reviewsJson.getBoolean("authRequired"));*/
     }
 
     @Test

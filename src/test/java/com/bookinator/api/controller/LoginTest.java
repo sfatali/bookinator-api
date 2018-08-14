@@ -2,6 +2,8 @@ package com.bookinator.api.controller;
 
 import com.bookinator.api.model.dto.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,11 +58,17 @@ public class LoginTest {
         // then:
         assertThat(response.getStatus()).as("Checking HTTP status")
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEmpty();
+        assertThat(response.getContentAsString()).isNotEmpty();
 
         // checking headers:
         assertThat(response.getHeaders("Authorization").toString())
                 .isNotEmpty().contains("Bearer ");
+
+        JSONObject responseJson = new JSONObject(response.getContentAsString());
+        Assert.assertTrue("Checking _links is there", responseJson.has("_links"));
+        // checking links:
+        JSONObject linksJson = responseJson.getJSONObject("_links");
+        Assert.assertTrue("Checking self is there", linksJson.has("home"));
     }
 
     @Test

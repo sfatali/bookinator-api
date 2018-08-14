@@ -1,5 +1,6 @@
 package com.bookinator.api.controller;
 
+import com.bookinator.api.controller.helpers.BookRequestsHelper;
 import com.bookinator.api.controller.helpers.GeneralHelper;
 import com.bookinator.api.dao.BookDAO;
 import com.bookinator.api.dao.BookHoldingsDAO;
@@ -62,9 +63,9 @@ public class BookRequestController {
         }
         List<BookHoldingResource> reqResources = new ArrayList<>();
         for(BookRequest req : requests) {
-            BookHoldingResource res = getHoldingResource(req);
+            BookHoldingResource res = BookRequestsHelper.getHoldingResource(req);
             CustomLink self = new CustomLink(linkTo(methodOn(BookRequestController.class)
-                    .getRequest(token, username, String.valueOf(req.getId())))
+                    .getRequests(token, username))
                     .toString(), "self", "GET", true);
             res.add(self);
             CustomLink deleteLink = new CustomLink(linkTo(methodOn(BookRequestController.class)
@@ -101,6 +102,7 @@ public class BookRequestController {
         int reqId;
         com.bookinator.api.model.HoldingRequest request;
         try {
+            int userId = (int) GeneralHelper.getUserIdFromToken(username);
             reqId = Integer.parseInt(reqIDStr);
             request = bookHoldingsDAO.getHoldingRequestById(reqId);
             if (request == null) {
@@ -108,6 +110,11 @@ public class BookRequestController {
                         GeneralHelper.getErrorResource(404, "Not found",
                                 "Request with this ID does not exist.", true),
                         HttpStatus.NOT_FOUND);
+            } else if(request.getReceiverId() != userId) {
+                return new ResponseEntity<ErrorResource>(
+                        GeneralHelper.getErrorResource(403, "Forbidden",
+                                "You cannot access someone else's book requests", true),
+                        HttpStatus.FORBIDDEN);
             }
         } catch (NumberFormatException ex) {
             return new ResponseEntity<ErrorResource>(
@@ -233,16 +240,5 @@ public class BookRequestController {
         headers.setLocation(linkTo(methodOn(BookRequestController.class)
                 .getRequest(token, username, String.valueOf(request.getId()))).toUri());
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
-    }
-
-    private BookHoldingResource getHoldingResource(BookRequest request) {
-        BookHoldingResource res = new BookHoldingResource();
-        res.setRequestId(request.getId());
-        res.setBook(request.getBook());
-        res.setDate(request.getDate());
-        res.setParentBook(request.getParentBook());
-        res.setRequestMessage(request.getRequestMessage());
-        res.setSender(request.getSender());
-        return res;
     }
 }
