@@ -36,11 +36,18 @@ public class HomeLinksControllerTest {
     private MockMvc mockMvc;
     private JacksonTester<LoginRequest> jacksonLoginTester;
 
+    /**
+     * Runs before every test
+     */
     @Before
     public void init() {
         JacksonTester.initFields(this, new ObjectMapper());
     }
 
+    /**
+     * Success case
+     * @throws Exception
+     */
     @Test
     public void goHomeSuccess() throws Exception {
         // when:
@@ -133,6 +140,10 @@ public class HomeLinksControllerTest {
         Assert.assertFalse(logoutJson.getBoolean("authRequired"));
     }
 
+    /**
+     * No token case
+     * @throws Exception
+     */
     @Test
     public void goHomeWithoutToken() throws Exception {
         // when:
@@ -147,6 +158,10 @@ public class HomeLinksControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * Wrong HTTP method case
+     * @throws Exception
+     */
     @Test
     public void goHomeInvalidHttpMethod() throws Exception {
         // when:

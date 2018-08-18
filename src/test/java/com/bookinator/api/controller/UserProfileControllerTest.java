@@ -40,11 +40,18 @@ public class UserProfileControllerTest {
     private MockMvc mockMvc;
     private JacksonTester<LoginRequest> jacksonLoginTester;
 
+    /**
+     * Runs before every test
+     */
     @Before
     public void init() {
         JacksonTester.initFields(this, new ObjectMapper());
     }
 
+    /**
+     * Getting user profile - success
+     * @throws Exception
+     */
     @Test
     public void getProfileSuccess() throws Exception {
         // when:
@@ -147,15 +154,12 @@ public class UserProfileControllerTest {
                 .slash("/johndoe/home").toString());
         Assert.assertEquals(homeJson.getString("method"), HttpMethod.GET.toString());
         Assert.assertTrue(homeJson.getBoolean("authRequired"));
-
-        // Checking reviews link internals:
-        /*JSONObject reviewsJson = linksJson.getJSONObject("reviews");
-        Assert.assertEquals(reviewsJson.getString("href"), linkTo(ReviewController.class)
-                .slash("/johndoe/profile/reviews").toString());
-        Assert.assertEquals(reviewsJson.getString("method"), HttpMethod.GET.toString());
-        Assert.assertTrue(reviewsJson.getBoolean("authRequired"));*/
     }
 
+    /**
+     * Getting profile without token
+     * @throws Exception
+     */
     @Test
     public void getProfileWithoutToken() throws Exception {
         // when:
@@ -170,6 +174,10 @@ public class UserProfileControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * Invalid username while to try to get a username
+     * @throws Exception
+     */
     @Test
     public void getProfileEmptyUsername() throws Exception {
         // when:
@@ -186,6 +194,10 @@ public class UserProfileControllerTest {
         assertThat(response.getContentAsString()).isNotEmpty().contains("Malformed URL");
     }
 
+    /**
+     * get profile for non-existing user
+     * @throws Exception
+     */
     @Test
     public void getProfileUserNotExist() throws Exception {
         // when:

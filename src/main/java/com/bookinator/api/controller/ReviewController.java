@@ -12,6 +12,7 @@ import com.bookinator.api.resources.util.CustomLink;
 import com.bookinator.api.resources.util.ResourceWithEmbeddedGenericSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/17/2018.
+ *
+ * Covers Review and Reviews resources
  */
 @RestController
 @RequestMapping(value = "/")
@@ -33,6 +36,12 @@ public class ReviewController {
     @Autowired
     private UserDAO userDAO;
 
+    /**
+     * Get reviews
+     * @param token
+     * @param username
+     * @return Reviews resource
+     */
     @RequestMapping(value = "{username}/reviews", method = RequestMethod.GET,
             produces ={"application/hal+json"})
     public HttpEntity getUserReviews(@RequestHeader("Authorization") String token,
@@ -96,11 +105,25 @@ public class ReviewController {
         return new ResponseEntity<ResourceWithEmbeddedGenericSupport>(resource, HttpStatus.OK);
     }
 
+    /**
+     * Add review
+     * @param token
+     * @param username
+     * @param review
+     * @return Empty response
+     */
     @RequestMapping(value = "{username}/reviews", method = RequestMethod.POST, produces ={"application/hal+json"})
     public HttpEntity addUserReview(@RequestHeader("Authorization") String token,
                                     @PathVariable("username") String username,
                                      @RequestBody Review review) {
-
-        return null;
+        try {
+            reviewDAO.create(review);
+        } catch (Exception ex) {
+            return new ResponseEntity<ErrorResource>(
+                    GeneralHelper.getErrorResource(500, "Internal server error", ex.getMessage(), true),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 }

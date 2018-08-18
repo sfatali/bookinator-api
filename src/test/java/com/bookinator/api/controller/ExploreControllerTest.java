@@ -39,11 +39,18 @@ public class ExploreControllerTest {
     private MockMvc mockMvc;
     private JacksonTester<LoginRequest> jacksonLoginTester;
 
+    /**
+     * Runs before every test
+     */
     @Before
     public void init() {
         JacksonTester.initFields(this, new ObjectMapper());
     }
 
+    /**
+     * Filtering books (unauthorized) - success case
+     * @throws Exception
+     */
     @Test
     public void filterBooksSuccess() throws Exception {
         // when:
@@ -128,6 +135,10 @@ public class ExploreControllerTest {
         Assert.assertFalse(selfJson.getBoolean("authRequired"));
     }
 
+    /**
+     * Trying to use wrong HTTP method
+     * @throws Exception
+     */
     @Test
     public void filterBooksWrongHttpMethod() throws Exception {
         // when:
@@ -142,6 +153,10 @@ public class ExploreControllerTest {
                 .isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
+    /**
+     * Filtering books (authorized) - success case
+     * @throws Exception
+     */
     @Test
     public void filterBooksAuthorizedSuccess() throws Exception {
         // when:
@@ -176,7 +191,7 @@ public class ExploreControllerTest {
         Assert.assertTrue("Checking add-to-wishlist is there", bookLinks.has("add-to-wishlist"));
         JSONObject wishJson = bookLinks.getJSONObject("add-to-wishlist");
         Assert.assertEquals(wishJson.getString("href"), linkTo(WishlistController.class)
-                .slash("/johndoe/wish").toString());
+                .slash("/johndoe/wishlist").toString());
         Assert.assertEquals(wishJson.getString("method"), HttpMethod.POST.toString());
         Assert.assertTrue(wishJson.getBoolean("authRequired"));
         Assert.assertTrue("Checking requestTemplate is there", wishJson.has("requestTemplate"));
@@ -217,6 +232,10 @@ public class ExploreControllerTest {
         Assert.assertTrue(homeJson.getBoolean("authRequired"));
     }
 
+    /**
+     * Filtering books (authorized) - forbidden without token
+     * @throws Exception
+     */
     @Test
     public void filterBooksAuthorizedWithoutToken() throws Exception {
         // when:

@@ -18,6 +18,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/15/2018.
+ *
+ * Covers User Profile resource
  */
 @RestController
 @RequestMapping(value = "/")
@@ -25,6 +27,12 @@ public class UserProfileController {
     @Autowired
     private UserDAO userDAO;
 
+    /**
+     * Get User Profile
+     * @param username
+     * @param token
+     * @return User profile resource
+     */
     @RequestMapping(value = "{username}/profile", method = RequestMethod.GET)
     HttpEntity getProfile(@PathVariable("username") String username,
                           @RequestHeader("Authorization") String token) {

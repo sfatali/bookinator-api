@@ -18,6 +18,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * Created by Sabina on 8/10/2018.
  */
 public class LoginHelper {
+    /**
+     * For obtaining token while testing other controller's methods
+     * that require authorization
+     *
+     * @param testInstance
+     * @param mockMvc
+     * @param jacksonLoginTester
+     * @param username
+     * @param password
+     * @return
+     * @throws Exception
+     */
     public static String getToken(Object testInstance, MockMvc mockMvc,
                                    JacksonTester<LoginRequest> jacksonLoginTester,
                                   String username, String password) throws Exception {

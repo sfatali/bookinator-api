@@ -27,6 +27,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/15/2018.
+ *
+ * Covers Book Request and Book Requests resources
  */
 @RestController
 @RequestMapping(value = "/")
@@ -37,6 +39,12 @@ public class BookRequestController {
     @Autowired
     private BookDAO bookDAO;
 
+    /**
+     * Get book requests
+     * @param token
+     * @param username
+     * @return Book Requests resource
+     */
     @RequestMapping(value = "{username}/requests", method = RequestMethod.GET, produces ={"application/hal+json"})
     HttpEntity getRequests(@RequestHeader("Authorization") String token,
                       @PathVariable("username") String username) {
@@ -192,8 +200,16 @@ public class BookRequestController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * Edit book request
+     * @param token
+     * @param username
+     * @param reqIDStr
+     * @param request
+     * @return Empty response
+     */
     @RequestMapping(value = "{username}/requests/{reqID}", method = RequestMethod.PUT, produces ={"application/hal+json"})
-    HttpEntity declineRequest(@RequestHeader("Authorization") String token,
+    HttpEntity editRequest(@RequestHeader("Authorization") String token,
                               @PathVariable("username") String username,
                               @PathVariable("reqID") String reqIDStr,
                               @RequestBody com.bookinator.api.model.HoldingRequest request) {
@@ -223,7 +239,7 @@ public class BookRequestController {
             }
             UpdateBookRequestStatus updateHoldingRequestStatus = new UpdateBookRequestStatus();
             updateHoldingRequestStatus.setHoldingRequestId(reqId);
-            updateHoldingRequestStatus.setStatusId(3);
+            updateHoldingRequestStatus.setStatusId(request.getStatusId());
             bookHoldingsDAO.changeHoldingStatus(updateHoldingRequestStatus);
         } catch (NumberFormatException ex) {
             return new ResponseEntity<ErrorResource>(

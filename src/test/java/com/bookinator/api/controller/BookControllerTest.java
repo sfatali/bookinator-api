@@ -25,6 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.logging.Logger;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -42,12 +44,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @EnableTransactionManagement
 @TestPropertySource(locations="classpath:test.properties")
 public class BookControllerTest {
+    private static final Logger logger =
+            Logger.getLogger(BookControllerTest.class.getSimpleName());
     @Autowired
     private MockMvc mockMvc;
     private JacksonTester<LoginRequest> jacksonLoginTester;
     private JacksonTester<Book> jacksonBookTester;
     private Book book;
 
+    /**
+     * Runs before every test
+     */
     @Before
     public void init() {
         JacksonTester.initFields(this, new ObjectMapper());
@@ -63,6 +70,11 @@ public class BookControllerTest {
         book.setTopics("meh");
     }
 
+    /**
+     * Testing getting book posts - success case
+     *
+     * @throws Exception
+     */
     @Test
     public void getUsersBooksSuccess() throws Exception {
         // when:
@@ -90,16 +102,6 @@ public class BookControllerTest {
         JSONObject book = books.getJSONObject(0);
         checkPancakesBook(book);
         JSONObject bookLinks = book.getJSONObject("_links");
-
-        // Checking book's links: post-book
-        Assert.assertTrue("Checking post-book is there", bookLinks.has("post-book"));
-        JSONObject postJson = bookLinks.getJSONObject("post-book");
-        Assert.assertEquals(postJson.getString("href"), linkTo(BookController.class)
-                .slash("/johndoe/books").toString());
-        Assert.assertEquals(postJson.getString("method"), HttpMethod.POST.toString());
-        Assert.assertTrue(postJson.getBoolean("authRequired"));
-        Assert.assertTrue("Checking requestTemplate is there", postJson.has("requestTemplate"));
-        Assert.assertEquals(postJson.getJSONArray("requestTemplate").length(), 9);
 
         // Checking book's links: edit-book
         Assert.assertTrue("Checking edit-book is there", bookLinks.has("edit-book"));
@@ -132,6 +134,16 @@ public class BookControllerTest {
                 .toString());
         Assert.assertEquals(selfJson.getString("method"), HttpMethod.GET.toString());
         Assert.assertTrue(selfJson.getBoolean("authRequired"));
+
+        // Checking post-book link:
+        Assert.assertTrue("Checking post-book is there", linksJson.has("post-book"));
+        JSONObject postJson = linksJson.getJSONObject("post-book");
+        Assert.assertEquals(postJson.getString("href"), linkTo(BookController.class)
+                .slash("/johndoe/books").toString());
+        Assert.assertEquals(postJson.getString("method"), HttpMethod.POST.toString());
+        Assert.assertTrue(postJson.getBoolean("authRequired"));
+        Assert.assertTrue("Checking requestTemplate is there", postJson.has("requestTemplate"));
+        Assert.assertEquals(postJson.getJSONArray("requestTemplate").length(), 9);
 
         // Checking home link:
         JSONObject homeJson = linksJson.getJSONObject("home");
@@ -175,6 +187,10 @@ public class BookControllerTest {
         Assert.assertFalse(selfJson.getBoolean("authRequired"));
     }
 
+    /**
+     * Getting certain book - success case
+     * @throws Exception
+     */
     @Test
     public void getBookSuccess() throws Exception {
         MockHttpServletResponse response
@@ -225,6 +241,10 @@ public class BookControllerTest {
         Assert.assertFalse(selfJson.getBoolean("authRequired"));
     }
 
+    /**
+     * Book not found
+     * @throws Exception
+     */
     @Test
     public void getBookNotFound() throws Exception {
         // when:
@@ -238,6 +258,10 @@ public class BookControllerTest {
                 .isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
+    /**
+     * Invalid path parameter for getting a book post
+     * @throws Exception
+     */
     @Test
     public void getBookBadRequest() throws Exception {
         // when:
@@ -251,6 +275,10 @@ public class BookControllerTest {
                 .isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    /**
+     * Create a book post - success case
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void saveBookSuccess() throws Exception {
@@ -272,6 +300,10 @@ public class BookControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * Edit book - success case
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void editBookSuccess() throws Exception {
@@ -294,6 +326,10 @@ public class BookControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * Edit book that does not exist - new one gets created
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void editBookNotFoundAndNewCreated() throws Exception {
@@ -316,6 +352,10 @@ public class BookControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * Delete a book - success case
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void deleteBookSuccess() throws Exception {
@@ -336,6 +376,10 @@ public class BookControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * Trying to delete someone else's book
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void tryingToDeleteSomeonesBook() throws Exception {
@@ -356,6 +400,10 @@ public class BookControllerTest {
                 .isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
+    /**
+     * Deleting a book that does not exist
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void deleteBookNotFound() throws Exception {
@@ -376,6 +424,10 @@ public class BookControllerTest {
                 .isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
+    /**
+     * Trying to edit someone else's book
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void tryingToEditSomeonesBook() throws Exception {
@@ -397,6 +449,10 @@ public class BookControllerTest {
                 .isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
+    /**
+     * Getting error 400 for invalid parameters in the path
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void deleteBookBadPath() throws Exception {

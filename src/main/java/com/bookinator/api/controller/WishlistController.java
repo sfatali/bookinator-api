@@ -23,6 +23,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/14/2018.
+ *
+ * Covers Wish and Wishlist resources
  */
 @RestController
 @RequestMapping(value = "/")
@@ -30,6 +32,12 @@ public class WishlistController {
     @Autowired
     private WishlistDAO wishlistDAO;
 
+    /**
+     * Get user's wishlist
+     * @param username
+     * @param token
+     * @return Wishlist resource
+     */
     @RequestMapping(value = "{username}/wishlist", method = RequestMethod.GET, produces ={"application/hal+json"})
     HttpEntity getUserWishlist(@PathVariable("username") String username,
                                @RequestHeader("Authorization") String token) {
@@ -98,7 +106,14 @@ public class WishlistController {
         return new ResponseEntity<ResourceWithEmbeddedGenericSupport>(resource, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "{username}/wish", method = RequestMethod.POST)
+    /**
+     * Add wish
+     * @param wishlist
+     * @param username
+     * @param token
+     * @return Empty response
+     */
+    @RequestMapping(value = "{username}/wishlist", method = RequestMethod.POST)
     public HttpEntity addToWishlist(@RequestBody Wish wishlist,
                              @PathVariable("username") String username,
                              @RequestHeader("Authorization") String token) {
@@ -135,7 +150,14 @@ public class WishlistController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{username}/wish/{bookId}", method = RequestMethod.DELETE)
+    /**
+     * Delete from wishlist
+     * @param username
+     * @param bookIdStr
+     * @param token
+     * @return Empty response
+     */
+    @RequestMapping(value = "/{username}/wishlist/{bookId}", method = RequestMethod.DELETE)
     HttpEntity removeFromWishlist(@PathVariable("username") String username,
                                   @PathVariable("bookId") String bookIdStr,
                                   @RequestHeader("Authorization") String token) {

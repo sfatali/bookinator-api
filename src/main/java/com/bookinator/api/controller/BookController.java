@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * Created by Sabina on 6/10/2018.
+ *
+ * Covers Book and Books resources.
  */
 @RestController
 @RequestMapping(value = "/")
@@ -33,6 +35,12 @@ public class BookController {
     @Autowired
     private UserDAO userDAO;
 
+    /**
+     * Get user's books
+     * @param username
+     * @param token
+     * @return Books resource
+     */
     @RequestMapping(value = "{username}/books", method = RequestMethod.GET)
     HttpEntity getUsersBooks(@PathVariable("username") String username,
                              @RequestHeader("Authorization") String token) {
@@ -63,13 +71,7 @@ public class BookController {
         for (Book book : books) {
             BookDtoResource bookResource = BooksHelper.getBookDtoResource(book);
             if(GeneralHelper.isUserAccessingOwnResources(token, username)) {
-                // create/edit/delete book
-                // Link for creating book post:
-                CustomLinkWithRequestTemplate postLink = new CustomLinkWithRequestTemplate(
-                        linkTo(methodOn(BookController.class).saveBook(null, username, token)).toString(), "post-book",
-                        "POST", true);
-                postLink.setRequestTemplate(BooksHelper.getBookPostTemplate());
-                bookResource.add(postLink);
+                // edit/delete book
                 // Link for editing book post:
                 CustomLinkWithRequestTemplate editLink = new CustomLinkWithRequestTemplate(
                         linkTo(methodOn(BookController.class).updateBook(null, username, token, String.valueOf(book.getId())))
@@ -118,6 +120,15 @@ public class BookController {
                         .getUsersBooks(username, token))
                         .toString(), "self", "GET", true);
         resource.add(selfLink);
+        // Link for creating book post:
+        if(GeneralHelper.isUserAccessingOwnResources(token, username)) {
+            CustomLinkWithRequestTemplate postLink = new CustomLinkWithRequestTemplate(
+                    linkTo(methodOn(BookController.class).saveBook(null, username, token)).toString(), "post-book",
+                    "POST", true);
+            postLink.setRequestTemplate(BooksHelper.getBookPostTemplate());
+            resource.add(postLink);
+        }
+        // home link:
         CustomLink homeLink = new CustomLink(
                 linkTo(methodOn(HomeLinksController.class).goHome(token, username))
                         .toString(),
@@ -130,7 +141,7 @@ public class BookController {
     /**
      * Getting a book by ID
      * @param bookIdStr
-     * @return
+     * @return Book resource
      */
     @RequestMapping(value = "books/{bookId}", method = RequestMethod.GET)
     public HttpEntity getBook(@PathVariable("bookId") String bookIdStr) {
@@ -162,6 +173,13 @@ public class BookController {
                 HttpStatus.OK);
     }
 
+    /**
+     * Create a book post
+     * @param book
+     * @param username
+     * @param token
+     * @return Empty response
+     */
     @RequestMapping(value = "{username}/books", method = RequestMethod.POST)
     HttpEntity saveBook(@RequestBody com.bookinator.api.model.Book book,
                         @PathVariable("username") String username,
@@ -194,6 +212,13 @@ public class BookController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * Delete book post
+     * @param bookIdStr
+     * @param username
+     * @param token
+     * @return Empty response
+     */
     @RequestMapping(value = "{username}/books/{bookId}", method = RequestMethod.DELETE)
     HttpEntity deleteBook(@PathVariable("bookId") String bookIdStr,
                           @PathVariable String username,
@@ -234,6 +259,14 @@ public class BookController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * Edit book post
+     * @param book
+     * @param username
+     * @param token
+     * @param bookIdStr
+     * @return Empty response
+     */
     @RequestMapping(value = "{username}/books/{bookId}", method = RequestMethod.PUT)
     HttpEntity updateBook(@RequestBody com.bookinator.api.model.Book book,
                           @PathVariable String username,

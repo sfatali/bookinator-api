@@ -22,6 +22,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/15/2018.
+ *
+ * Covers Book Holding and Book Holdings resources
  */
 @RestController
 @RequestMapping(value = "/")
@@ -30,6 +32,12 @@ public class BookHoldingController {
     @Autowired
     private BookHoldingsDAO bookHoldingsDAO;
 
+    /**
+     * Get bOOk holdings
+     * @param token
+     * @param username
+     * @return Book Holdings resource
+     */
     @RequestMapping(value = "{username}/holdings", method = RequestMethod.GET, produces ={"application/hal+json"})
     HttpEntity getHoldings(@RequestHeader("Authorization") String token,
                            @PathVariable("username") String username) {

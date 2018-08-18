@@ -40,6 +40,9 @@ public class WishlistControllerTest {
     private JacksonTester<Wish> jacksonWishlistTester;
     private Wish wish;
 
+    /**
+     * Runs before every test
+     */
     @Before
     public void init() {
         wish = new Wish();
@@ -48,6 +51,10 @@ public class WishlistControllerTest {
         JacksonTester.initFields(this, new ObjectMapper());
     }
 
+    /**
+     * Getting user wishlist - success case
+     * @throws Exception
+     */
     @Test
     public void getUserWishlistSuccess() throws Exception {
         // when:
@@ -64,6 +71,10 @@ public class WishlistControllerTest {
                 .isEqualTo(HttpStatus.OK.value());
     }
 
+    /**
+     * Getting user wishlist - empty list case
+     * @throws Exception
+     */
     @Test
     public void getUserWishlistEmptyList() throws Exception {
         // when:
@@ -80,6 +91,10 @@ public class WishlistControllerTest {
                 .isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
+    /**
+     * Trying to access someone else's wishlist
+     * @throws Exception
+     */
     @Test
     public void accessingSomeoneElsesWishlistForbidden() throws Exception {
         // when:
@@ -96,12 +111,16 @@ public class WishlistControllerTest {
                 .isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
+    /**
+     * Adding book to wishlist - success
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void addToWishlistSuccess() throws Exception {
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(post("/johndoe/wish")
+                = this.mockMvc.perform(post("/johndoe/wishlist")
                 .header("Authorization",
                         LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
                                 "johndoe", "12345678"))
@@ -114,12 +133,16 @@ public class WishlistControllerTest {
                 .isEqualTo(HttpStatus.CREATED.value());
     }
 
+    /**
+     * Trying to add a book that is already in a wishist
+     * @throws Exception
+     */
     @Test
     public void addToWishlistSecondTime() throws Exception {
         // when:
         wish.setBookId(1);
         MockHttpServletResponse response
-                = this.mockMvc.perform(post("/johndoe/wish")
+                = this.mockMvc.perform(post("/johndoe/wishlist")
                 .header("Authorization",
                         LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
                                 "johndoe", "12345678"))
@@ -132,12 +155,16 @@ public class WishlistControllerTest {
                 .isEqualTo(HttpStatus.CONFLICT.value());
     }
 
+    /**
+     * Removing from wishlist - success
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void removeFromWishlistSuccess() throws Exception {
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(delete("/johndoe/wish/1")
+                = this.mockMvc.perform(delete("/johndoe/wishlist/1")
                 .header("Authorization",
                         LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
                                 "johndoe", "12345678"))
@@ -150,11 +177,15 @@ public class WishlistControllerTest {
                 .isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * Trying to remove a wish that does not exist
+     * @throws Exception
+     */
     @Test
     public void removeWishThatNotExist() throws Exception {
         // when:
         MockHttpServletResponse response
-                = this.mockMvc.perform(delete("/johndoe/wish/100")
+                = this.mockMvc.perform(delete("/johndoe/wishlist/100")
                 .header("Authorization",
                         LoginHelper.getToken(this, mockMvc, jacksonLoginTester,
                                 "johndoe", "12345678"))

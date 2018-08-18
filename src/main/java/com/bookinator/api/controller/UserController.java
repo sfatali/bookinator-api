@@ -23,6 +23,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/14/2018.
+ *
+ * Covers User resource
  */
 @RestController
 @RequestMapping(value = "/")
@@ -33,6 +35,11 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /**
+     * Create User
+     * @param user
+     * @return Empty response
+     */
     @RequestMapping(value = "user", method = RequestMethod.POST)
     HttpEntity register(@RequestBody User user) {
         if(user.getUsername() == null || user.getUsername().length() == 0) {
@@ -100,6 +107,13 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * Edit user
+     * @param user
+     * @param username
+     * @param token
+     * @return Empty response
+     */
     @RequestMapping(value = "{username}/user", method = RequestMethod.PUT)
     HttpEntity updateUser(@RequestBody User user,
                           @PathVariable("username") String username,

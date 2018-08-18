@@ -41,6 +41,9 @@ public class UserControllerTest {
     private JacksonTester<User> jacksonTester;
     private JacksonTester<LoginRequest> jacksonLoginTester;
 
+    /**
+     * Runs before every test
+     */
     @Before
     public void init() {
         user = new User();
@@ -55,6 +58,10 @@ public class UserControllerTest {
         JacksonTester.initFields(this, new ObjectMapper());
     }
 
+    /**
+     * User creation - success
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void registerSuccess() throws Exception {
@@ -71,6 +78,10 @@ public class UserControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * User creation - invalid fields
+     * @throws Exception
+     */
     @Test
     public void registerServerError() throws Exception {
         user.setUsername("thatssssaaaaaaaaaaveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryyyyyylo" +
@@ -93,6 +104,10 @@ public class UserControllerTest {
         Assert.assertTrue("Checking home is there", linksJson.has("home"));
     }
 
+    /**
+     * User creation - duplicate username
+     * @throws Exception
+     */
     @Test
     public void registerUsernameTaken() throws Exception {
         user.setUsername("sabina");
@@ -114,6 +129,10 @@ public class UserControllerTest {
         Assert.assertTrue("Checking home is there", linksJson.has("home"));
     }
 
+    /**
+     * User creation - empty username
+     * @throws Exception
+     */
     @Test
     public void registerUsernameEmpty() throws Exception {
         user.setUsername(null);
@@ -135,6 +154,10 @@ public class UserControllerTest {
         Assert.assertTrue("Checking home is there", linksJson.has("home"));
     }
 
+    /**
+     * User creation - too short username
+     * @throws Exception
+     */
     @Test
     public void registerUsernameTooShort() throws Exception {
         user.setUsername("1234");
@@ -156,6 +179,10 @@ public class UserControllerTest {
         Assert.assertTrue("Checking home is there", linksJson.has("home"));
     }
 
+    /**
+     * user creation - empty password
+     * @throws Exception
+     */
     @Test
     public void registerPasswordEmpty() throws Exception {
         user.setPassword(null);
@@ -177,6 +204,10 @@ public class UserControllerTest {
         Assert.assertTrue("Checking home is there", linksJson.has("home"));
     }
 
+    /**
+     * User creation - invalid city
+     * @throws Exception
+     */
     @Test
     public void registerInvalidCity() throws Exception {
         user.setCityId(-100);
@@ -198,6 +229,10 @@ public class UserControllerTest {
         Assert.assertTrue("Checking home is there", linksJson.has("home"));
     }
 
+    /**
+     * edit user - success
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void editUserSuccess() throws Exception {
@@ -216,6 +251,10 @@ public class UserControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * edit user - no token
+     * @throws Exception
+     */
     @Test
     public void editUserWithoutToken() throws Exception {
         // when:
@@ -231,6 +270,10 @@ public class UserControllerTest {
         assertThat(response.getContentAsString()).isEmpty();
     }
 
+    /**
+     * Trying to edit someone else's user details - wrong userId
+     * @throws Exception
+     */
     @Test
     public void editUserWrongUserId() throws Exception {
         user.setId(2);
@@ -250,6 +293,10 @@ public class UserControllerTest {
         assertThat(response.getContentAsString()).contains("You cannot edit someone else's profile");
     }
 
+    /**
+     * Trying to edit someone else's user details - wrong username in path
+     * @throws Exception
+     */
     @Test
     public void editUserWrongPath() throws Exception {
         // when:
@@ -268,6 +315,10 @@ public class UserControllerTest {
         assertThat(response.getContentAsString()).contains("You cannot edit someone else's profile");
     }
 
+    /**
+     * Edit user - empty name in request
+     * @throws Exception
+     */
     @Test
     public void editUserEmptyName() throws Exception {
         user.setName(null);
@@ -287,6 +338,10 @@ public class UserControllerTest {
         assertThat(response.getContentAsString()).contains("Name cannot be empty");
     }
 
+    /**
+     * Edit user - empty surname in request
+     * @throws Exception
+     */
     @Test
     public void editUserEmptySurname() throws Exception {
         user.setSurname(null);
@@ -306,6 +361,10 @@ public class UserControllerTest {
         assertThat(response.getContentAsString()).contains("Surname cannot be empty");
     }
 
+    /**
+     * Edit user - invalid city in request
+     * @throws Exception
+     */
     @Test
     public void editUserInvalidCity() throws Exception {
         user.setCityId(-101);

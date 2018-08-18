@@ -16,11 +16,19 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/12/2018.
+ *
+ * Covers Home resource
  */
 @RestController
 @RequestMapping(value = "/")
 public class HomeLinksController {
 
+    /**
+     * Get Home links
+     * @param token
+     * @param username
+     * @return Home
+     */
     @RequestMapping(value = "{username}/home", method = RequestMethod.GET, produces ={"application/hal+json"})
     public HttpEntity goHome(@RequestHeader("Authorization") String token,
                              @PathVariable("username") String username) {

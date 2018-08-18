@@ -37,6 +37,9 @@ public class LoginTest {
     private LoginRequest loginRequest;
     private JacksonTester<LoginRequest> jacksonTester;
 
+    /**
+     * Runs before every test
+     */
     @Before
     public void init() {
         loginRequest = new LoginRequest();
@@ -45,6 +48,10 @@ public class LoginTest {
         JacksonTester.initFields(this, new ObjectMapper());
     }
 
+    /**
+     * Successful authentication
+     * @throws Exception
+     */
     @Test
     @Transactional
     public void loginSuccess() throws Exception {
@@ -71,6 +78,10 @@ public class LoginTest {
         Assert.assertTrue("Checking self is there", linksJson.has("home"));
     }
 
+    /**
+     * Bad auth credentials
+     * @throws Exception
+     */
     @Test
     public void loginFail() throws Exception {
         loginRequest.setPassword("1234567");

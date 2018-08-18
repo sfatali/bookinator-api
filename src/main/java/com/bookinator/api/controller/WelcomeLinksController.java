@@ -24,6 +24,10 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping(value = "/")
 public class WelcomeLinksController {
 
+    /**
+     * Get Welcome
+     * @return Welcome resource
+     */
     @RequestMapping(value = "welcome", method = RequestMethod.GET, produces ={"application/hal+json"})
     public HttpEntity getApiEntry() {
         ResourceSupport resource = new ResourceSupport();

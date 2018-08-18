@@ -23,6 +23,8 @@
 7) To run all the tests, use command "mvn test"
     To run DAO tests:
         mvn clean test -Dtest=com.bookinator.api.dao.* -Dsurefire.useFile=false | findstr /V "Context Bootstap Migrate Printer Runner support xml Validate DEBUG WARNING compiler maven"
+    To run API tests:
+        mvn test -Dtest=com.bookinator.api.controller.* -Dsurefire.useFile=false
 
 8) There is no separate test database. It can be added easily, but for the sake of setup simplicity it was not.
    However, all the SQL transactions taking place in DAO unit tests get rolled back upon test completion,

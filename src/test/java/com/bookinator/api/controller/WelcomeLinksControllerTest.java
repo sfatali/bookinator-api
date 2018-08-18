@@ -34,6 +34,10 @@ public class WelcomeLinksControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Welcome - success
+     * @throws Exception
+     */
     @Test
     public void getWelcomeSuccess() throws Exception {
         // when:
@@ -86,6 +90,10 @@ public class WelcomeLinksControllerTest {
         Assert.assertTrue("Checking self urlTemplate is here", exploreJson.has("urlTemplate"));
     }
 
+    /**
+     * Invalid HTTP method
+     * @throws Exception
+     */
     @Test
     public void getWelcomeInvalidHttpMethod() throws Exception {
         // when:

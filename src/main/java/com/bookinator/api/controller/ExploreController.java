@@ -28,6 +28,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Created by Sabina on 6/14/2018.
+ *
+ * Covers Explore and Explore, authorized
  */
 @RestController
 @RequestMapping(value = "/")
@@ -37,6 +39,16 @@ public class ExploreController {
     @Autowired
     private UserDAO userDAO;
 
+    /**
+     * Filter books
+     * @param name
+     * @param author
+     * @param fieldId
+     * @param yearPublished
+     * @param cityId
+     * @param topic
+     * @return Explore resource
+     */
     @RequestMapping(value = "/explore", method = RequestMethod.GET/*, produces ={"application/collection+json"}*/)
     HttpEntity filterBooks(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "author", required = false) String author,
@@ -126,6 +138,18 @@ public class ExploreController {
         return new ResponseEntity<ResourceWithEmbeddedGenericSupport>(resource, HttpStatus.OK);
     }
 
+    /**
+     * Flter books
+     * @param name
+     * @param author
+     * @param fieldId
+     * @param yearPublished
+     * @param cityId
+     * @param topic
+     * @param username
+     * @param token
+     * @return Explore authorized resource
+     */
     @RequestMapping(value = "{username}/explore", method = RequestMethod.GET)
     HttpEntity authFilterBooks(@RequestParam(value = "name", required = false) String name,
                            @RequestParam(value = "author", required = false) String author,
