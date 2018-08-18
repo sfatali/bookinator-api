@@ -56,9 +56,9 @@
 2) "src/main/java/.../dao" -- interfaces with the database methods.
 In "resources/.../dao" -- the SQL queries implementations are stored.
 
-3)"resources/db/migration" -- where database schema and dump data scripts are stored.
+3) "resources/db/migration" -- where database schema and dump data scripts are stored.
 
-4)"src/main/java/.../model" -- where classes that incorporate db entities and data transfer objects are stored.
+4) "src/main/java/.../model" -- where classes that incorporate db entities and data transfer objects are stored.
 
 5) "src/main/java/.../resources" -- where API responses classes are stored (deep inside they include DTO).
 
